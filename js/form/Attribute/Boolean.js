@@ -1,17 +1,17 @@
 import {Attribute} from './Attribute';
 import {errors} from '../../messages';
 
-class BooleanAttribute extends Attribute {
-    list = {
-        'true': 'Oui',
-        'false': 'Non'
-    }
-
-    trueValues  = ["1", "true", "t", "vrai", "oui"];
-    falseValues = ["0", "false", "f", "faux", "non"];
-
+class BooleanAttribute extends Attribute {    
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
+
+        this.list = {
+            'true': 'Oui',
+            'false': 'Non'
+        };
+
+        this.trueValues  = ["1", "true", "t", "vrai", "oui"];
+        this.falseValues = ["0", "false", "f", "faux", "non"];
     }
 
     getDOM(value = null) {

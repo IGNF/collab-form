@@ -5,30 +5,30 @@ import {Attribute} from './Attribute';
 import {errors} from '../../messages';
 
 class DateAttribute extends Attribute {
-    mainOptions = {
-        locale: 'fr',
-        format: 'YYYY-MM-DD',
-        useCurrent: false,
-        buttons: {
-            showToday: true,
-            showClear: true,
-            showClose: true
-        },
-        ignoreReadonly: true
-    };
-
-    formats = {
-        'date': 'YYYY-MM-DD',
-        'year': 'YYYY',
-        'yearmonth': 'YYYY-MM',
-        'datetime': 'YYYY-MM-DD HH:mm:ss'
-    };
-
     constructor(id, name, mask = 'date', formId, options = {}) {
         super(id, name, formId, options);
         this.mask = mask;
         this.min = options.min_value;
         this.max = options.max_value;
+
+        this.mainOptions = {
+            locale: 'fr',
+            format: 'YYYY-MM-DD',
+            useCurrent: false,
+            buttons: {
+                showToday: true,
+                showClear: true,
+                showClose: true
+            },
+            ignoreReadonly: true
+        };
+
+        this.formats = {
+            'date': 'YYYY-MM-DD',
+            'year': 'YYYY',
+            'yearmonth': 'YYYY-MM',
+            'datetime': 'YYYY-MM-DD HH:mm:ss'
+        };
     }
 
     /**

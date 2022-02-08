@@ -1,4 +1,4 @@
-import {Form} from 'form/Form';
-import {LinkUpdater} from 'form/Attribute/Document'
+import {Form, createForm} from './js/form/Form';
+import {LinkUpdater} from './js/form/Attribute/Document'
 
 export {createForm, Form, LinkUpdater};

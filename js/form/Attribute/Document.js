@@ -252,16 +252,20 @@ class DocumentAttribute extends Attribute {
 };
 
 class LinkUpdater {
-    static documentUrls_ = {
-        'get': Routing.generate('gcms_ajax_document_get', {'id': '__ID__' }),
-        'add': Routing.generate('gcms_ajax_document_add'),
-        'remove' : Routing.generate('gcms_ajax_document_delete', {'id': '__ID__' }),
-        'download' : Routing.generate('gcms_document_download', {'id': '__ID__' })
-    };
+    constructor() {
+        this.documentUrls_ = null;
+        //ex collaboratif
+        // documentUrls_ = {
+        //     'get': Routing.generate('gcms_ajax_document_get', {'id': '__ID__' }),
+        //     'add': Routing.generate('gcms_ajax_document_add'),
+        //     'remove' : Routing.generate('gcms_ajax_document_delete', {'id': '__ID__' }),
+        //     'download' : Routing.generate('gcms_document_download', {'id': '__ID__' })
+        // };
+    }
 
     static update($el) {
         let id = $el.attr('data-docid');
-        if (!id) {
+        if (!id || !LinkUpdater.documentUrls_) {
             return;
         }
 

@@ -201,13 +201,13 @@ const typesIgnored = [
 
 /**
  * 
- * @param {Jquery element} $div la div dans laquelle on veut construire le formulaire 
+ * @param {Jquery element} $container la div dans laquelle on veut construire le formulaire 
  * @param {string} id un identifiant pour le formulaire 
  * @param {object} theme le theme tel que renvoyé par l'api
  * @param {object} values un table clé [le nom de l'attribut] valeur [la value de l'attribut]
  * @returns 
  */
-function createForm($div, id, theme, values = {}) {
+function createForm($container, id, theme, values = {}) {
     if (!('attributes' in theme && theme.attributes.length)) return null;
 
     let $div = $('div class="feature-form"></div>');
@@ -216,6 +216,7 @@ function createForm($div, id, theme, values = {}) {
 
     let form = new Form($table, id);
     $div.append($table);
+    $container.append($div);
 
     for (var i in theme.attributes) {
         let themeAttr = theme.attributes[i];
