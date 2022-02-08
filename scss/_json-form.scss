@@ -1,0 +1,53 @@
+div.feature-attribute {
+    .label.control-label {
+        padding: 0 0 0 5px;
+        margin-bottom:0;
+        &.has-error {
+            color: red;
+        }    
+    }
+
+    .add-button {
+        float: right;
+    }
+
+    .json-form {
+        display: flex;
+        flex-direction: row;
+        clear: both;
+
+        .json-tool {
+            margin: 0.2rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .json-object {
+            display: flex;
+            flex-grow: 1;
+            flex-flow: column nowrap;
+            justify-content: flex-start;
+            padding: 0.3rem;
+            margin: 0.2rem;
+
+            .json-row {
+                display: flex;
+                flex-direction: row;
+                font-size: 1rem;
+
+                .json-key {
+                    width: 40%;
+                    font-style: italic;
+                }
+                .json-value {
+                    width: 60%; 
+                    input, select {
+                        width: 100%;
+                        border: .1rem solid #dde1e6;
+                    }   
+                } 
+
+            }
+        }
+    }
+}
