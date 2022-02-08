@@ -22,12 +22,10 @@ Autres dépendances:
 
 ## Exemple d'utilisation
 
-html: 
+html:
 
 <pre>
-
-<div id="#my-form-container"></div>
-
+    &lt;div id="#my-form-container">&lt;/div>
 </pre>
 
 script: 
