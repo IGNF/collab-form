@@ -31,7 +31,7 @@ class ChoiceAttribute extends Attribute {
             key = (key && key != "null") ? key : "";
             
             let $option = $(`<option value="${item}">${key}</option>`);
-            if (value === key) {
+            if (value === item) {
                 $option.prop('selected', true);
             }
             $input.append($option);
