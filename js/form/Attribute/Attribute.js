@@ -13,6 +13,7 @@ class Attribute {
         this.defaultValue = options.default_value ? options.defaultValue : options.default;
         this.conditionField = options.condition_field;
         this.constraint = options.constraint;
+        this.jeuxAttributs = options.jeux_attributs;
         this.error = null;
     }
 
@@ -30,7 +31,6 @@ class Attribute {
         if (this.max) $input.attr('max', this.max);
         return $input;
     }
-
 
     /**
      *

@@ -39,6 +39,7 @@ class ChoiceAttribute extends Attribute {
 
         if (this.readOnly) $input.prop('disabled', true);
         if (this.defaultValue) $input.data('defaultValue', this.defaultValue);
+        if (this.jeuxAttributs) $input.addClass('jeux-attributs').data('jeuxAttributs', this.jeuxAttributs);
 
         return $input;
     }

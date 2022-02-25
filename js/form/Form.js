@@ -1,6 +1,7 @@
 import { FillConstraint } from "./fill-constraint";
 import { Attribute } from './Attribute/Attribute';
 import { AttributeFactory } from './AttributeFactory';
+require('../jeux-attributs.js');
 
 class Form {
     constructor(containerSelector, id) {
@@ -65,13 +66,13 @@ class Form {
     }
 
     checkRegexConstraint($attribute, value, regex) {
-        let ccb = $attribute.data('customCombobox');
+        let cbb = $attribute.data('customCombobox');
         if (String(value) && String(value).match(regex)) {
             // combobox
-            if (ccb) $attribute.combobox("setDisabled", false);
+            if (cbb) $attribute.combobox("setDisabled", false);
             else $attribute.prop('disabled', false);
         } else {
-            if (ccb) {
+            if (cbb) {
                 // combobox
                 $attribute.combobox('setDisabled', true);
                 $attribute.combobox("setDefaultOption");
@@ -82,8 +83,16 @@ class Form {
         }
     }
 
+    initJeuxAttributs() {
+        let containerId =`${this.id}`;
+        $(`.jeux-attributs[data-form-ref=${this.id}]`).each(function() {
+            let config = $(this).data('jeuxAttributs');
+            $(this).jeuxAttributs({ containerId: containerId, config: config });
+        });
+    }
+
     initCombobox() {
-        var self = this;
+        let self = this;
         $(`select.combobox[data-form-ref=${self.id}]`).each(function() {
             let options = {
                 appendTo: self.containerSelector,
@@ -142,6 +151,7 @@ class Form {
         this.initFillConstraints();
         this.initCombobox();
         this.initRegexDependants();
+        this.initJeuxAttributs();
     }
 
     addAttributeFromFeatureAttributeType(id, attributeType) {
