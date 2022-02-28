@@ -67,7 +67,7 @@
                     let $target = $(selector);
                     if ($target.length) {
                         let cbb = $target.data('customCombobox');
-                        cbb ? cbb.setOption(value) : $target.val(value);
+                        cbb ? cbb.setOption(value) : $target.val(value).trigger('change');
                     }
                 });
             }
