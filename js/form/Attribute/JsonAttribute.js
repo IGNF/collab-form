@@ -80,7 +80,7 @@ class JsonAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         
-        this.jsonSchema = options['json_schema'];			
+        this.jsonSchema = null;			
         this.JsonValue  = {};
         this.datepickerOptions = {
             locale: 'fr',
@@ -95,15 +95,17 @@ class JsonAttribute extends Attribute {
             ignoreReadonly: true
         };
         this.required;
-        this.next       = 0;
+        this.next = 0;
 
-        if (! options['json_schema']) {
+        // Le schema est obligatoire et doit etre un object
+        let schema = options['json_schema'];
+        if (! schema || (schema !== Object(schema))) {
             console.warn('Schema obligatoire !!');
             return;
         }
 
+        this.jsonSchema = schema;			
         try {
-            this.jsonSchema = JSON.parse(options['json_schema']);
             if (this.jsonSchema.type === 'array') {
                 this.required = this.jsonSchema.items.required || [];
             } else {
@@ -204,6 +206,11 @@ class JsonAttribute extends Attribute {
      * @param {Object} jsonObject 
      */
     add(jsonObject = {}) {
+        // Pas de schema associe
+        if (! this.jsonSchema) {
+            return;
+        }
+
         /* Creation du formulaire */
         let jsobj = this.bindValues(jsonObject);
         let jsform = this.buildJsonForm(jsobj);
