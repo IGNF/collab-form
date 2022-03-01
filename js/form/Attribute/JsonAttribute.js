@@ -80,7 +80,7 @@ class JsonAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         
-        this.jsonSchema = null;
+        this.jsonSchema = options['json_schema'];			
         this.JsonValue  = {};
         this.datepickerOptions = {
             locale: 'fr',
