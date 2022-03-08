@@ -157,9 +157,16 @@ class Form {
     addAttributeFromFeatureAttributeType(id, attributeType) {
         let type = attributeType.type;
         let name = attributeType.name;
-        let attribute = AttributeFactory.create(id, name, type, this.id, attributeType);
-        this.attributes[attribute.id] = attribute;
-        return attribute;
+
+        try {
+            let attribute = AttributeFactory.create(id, name, type, this.id, attributeType);
+            this.attributes[attribute.id] = attribute;
+            return attribute;
+        } catch(e) {
+            console.warn(e.message);
+            return null;
+        }
+        
     }
 
     addAttributeFromTheme(id, themeAttribute) {
