@@ -6,6 +6,7 @@ class ChoiceAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         let listOfValues = options.listOfValues;
+        this.multiple = ('multiple' in options) ? options.multiple : false;
 
         if (Array.isArray(listOfValues)) {
             this.listOfValues = {};
@@ -40,6 +41,11 @@ class ChoiceAttribute extends Attribute {
         if (this.readOnly) $input.prop('disabled', true);
         if (this.defaultValue) $input.data('defaultValue', this.defaultValue);
         if (this.jeuxAttributs) $input.addClass('jeux-attributs').data('jeuxAttributs', this.jeuxAttributs);
+        
+        if (this.multiple) {
+            $input.prop('multiple', true);
+            $input.removeClass('combobox');
+        }
 
         return $input;
     }
@@ -50,6 +56,7 @@ class ChoiceAttribute extends Attribute {
     }
 
     normalize(value) {
+        if (Array.isArray(value)) return value;
         value = value ? value.trim() : null;
         if ([null, ''].indexOf(value) !== -1) return null;
         return value;
@@ -58,12 +65,36 @@ class ChoiceAttribute extends Attribute {
     validate(value) {
         this.error = null;
         value = value ? value : this.getNormalizedValue();
+
+        if (Array.isArray(value) && !this.multiple) {
+            this.error = errors.unexpected_type;
+            return false;
+        }
+
+        if (this.multiple) {
+            return this.validateMultiple(value);
+        }
+
         if (!value && (!this.nullable || this.required)) {
             this.error = errors.mandatory;
             return false;
         }
 
         if (!this.validateDependant(value)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    validateMultiple(value) {
+        if (!Array.isArray(value)) {
+            this.error = errors.unexpected_type;
+            return false;
+        }
+        
+        if (value.length < 1 && (!this.nullable || this.required)) {
+            this.error = errors.mandatory;
             return false;
         }
 
