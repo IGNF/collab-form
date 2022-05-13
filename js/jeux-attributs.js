@@ -63,6 +63,10 @@
             let srcValue = $element.val();
             if (srcValue in plugin.settings.config) {
                 $.each(plugin.settings.config[srcValue], (key, value) => {
+                    if (typeof value === 'boolean') {
+                        value = Boolean(value).toString();
+                    }
+                    
                     let selector = `[data-form-ref="${containerId}"][name="${key}"]`;
                     let $target = $(selector);
                     if ($target.length) {
