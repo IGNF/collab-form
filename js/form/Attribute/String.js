@@ -1,4 +1,5 @@
 import {Attribute} from './Attribute';
+import {errors} from '../../messages';
 
 class StringAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
@@ -34,7 +35,7 @@ class StringAttribute extends Attribute {
         value = value ? value : this.getNormalizedValue();
 
         if (!value && (!this.nullable || this.required) && !this.custom_id) {
-            this.error = Translator.trans('form.error.mandatory', {}, "messages");
+            this.error = errors.mandatory;
             return false;
         }
         
@@ -48,7 +49,7 @@ class StringAttribute extends Attribute {
             (this.maxLength && value.length > this.maxLength)
             || (this.minLength && value.length < this.minLength)     
         ) {
-            this.error = Translator.trans('form.error.min_max', {}, "messages");
+            this.error = errors["min_max"];
             return false;
         }
 
@@ -56,13 +57,13 @@ class StringAttribute extends Attribute {
             try {
                 let url = new URL(value);
             } catch(e) {
-               this.error = Translator.trans('form.error.invalid_url', {}, "messages");
+               this.error = errors["invalid_url"];
                 return false;
             }
         } else if (this.pattern) {
             let regex = new RegExp(this.pattern);
             if (!regex.exec(value)) {
-                this.error = Translator.trans('form.error.invalid_regex', {}, "messages");
+                this.error = errors["invalid regex"];
                 return false;
             }
         }
