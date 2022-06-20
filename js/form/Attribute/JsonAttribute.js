@@ -122,7 +122,7 @@ class JsonAttribute extends Attribute {
      */
     getDOM(value = null) {
         if (value) {
-            this.JsonValue = JSON.parse(value);
+            this.JsonValue = (typeof value === 'string') ? JSON.parse(value) : value;
         }
 
         if (! Array.isArray(this.JsonValue)) {
