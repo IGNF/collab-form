@@ -122,6 +122,7 @@ class JsonAttribute extends Attribute {
      */
     getDOM(value = null) {
         if (value) {
+            // Normalement value est un object JSON
             this.JsonValue = (typeof value === 'string') ? JSON.parse(value) : value;
         }
 
@@ -323,7 +324,7 @@ class JsonAttribute extends Attribute {
             value = value[0];    
         }
 
-        return JSON.stringify(value);
+        return value;
     }
 
     normalize(value) {}
