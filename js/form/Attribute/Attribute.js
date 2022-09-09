@@ -10,7 +10,7 @@ class Attribute {
         this.title = ('title' in options) ? options.title : name;
         this.automatic = ('automatic' in options) ? options.automatic : false;
         this.computed = ('computed' in options) ? options.computed : false;
-        this.defaultValue = options.default_value ? options.defaultValue : options.default;
+        this.defaultValue = options.default_value ? options.default_value : options.default;
         this.conditionField = options.condition_field;
         this.constraint = options.constraint;
         this.jeuxAttributs = options.jeux_attributs;
