@@ -21,7 +21,7 @@ class BooleanAttribute extends Attribute {
         let $input = $(`<select class="feature-attribute" id="${this.id}" name="${this.name}" data-form-ref="${this.formId}"></select>`);
         $.each(self.list, function(key, item) {
             let $option = $(`<option value="${key}">${item}</option>`);
-            if (val === key) {
+            if (self.normalize(val) === self.normalize(key)) {
                 $option.prop('selected', true);
             }
             $input.append($option);
