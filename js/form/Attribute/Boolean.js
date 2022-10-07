@@ -58,7 +58,7 @@ class BooleanAttribute extends Attribute {
         if (!this.validateDependant(value)) {
             return false;
         }
-        if (undefined === value && (!this.nullable || this.required)) {
+        if (undefined === value && (!this.nullable || this.required) && !this.conditionField) {
             this.error = errors.mandatory;
             return false;
         }

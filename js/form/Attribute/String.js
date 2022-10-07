@@ -34,7 +34,7 @@ class StringAttribute extends Attribute {
         this.error = null;
         value = value ? value : this.getNormalizedValue();
 
-        if (!value && (!this.nullable || this.required) && !this.custom_id) {
+        if (!value && (!this.nullable || this.required) && !this.custom_id && !this.conditionField) {
             this.error = errors.mandatory;
             return false;
         }

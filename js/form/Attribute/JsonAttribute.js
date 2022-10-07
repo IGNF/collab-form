@@ -357,7 +357,7 @@ class JsonAttribute extends Attribute {
         this.error = null;
 
         // valeur null mais pas nullable => erreur
-        if (!value && (!this.nullable || this.required)) {
+        if (!value && (!this.nullable || this.required) && !this.conditionField) {
             this.error = errors.mandatory;
             return false;
         }

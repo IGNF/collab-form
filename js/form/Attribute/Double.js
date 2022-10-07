@@ -41,7 +41,7 @@ class DoubleAttribute extends Attribute {
     validate(value) {
         this.error = null;
         value = value ? value : this.getNormalizedValue();
-        if (!value && (!this.nullable || this.required)) {
+        if (!value && (!this.nullable || this.required) && !this.conditionField) {
             this.error = errors.mandatory;
             return false;
         }

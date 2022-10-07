@@ -75,7 +75,7 @@ class ChoiceAttribute extends Attribute {
             return this.validateMultiple(value);
         }
 
-        if (!value && (!this.nullable || this.required)) {
+        if (!value && (!this.nullable || this.required) && !this.conditionField) {
             this.error = errors.mandatory;
             return false;
         }
