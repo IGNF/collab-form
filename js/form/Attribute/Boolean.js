@@ -27,7 +27,9 @@ class BooleanAttribute extends Attribute {
             $input.append($option);
         });
         if (this.nullable) {
-            $input.prepend("<option value=''></option>");
+            let $option = $("<option value=''></option>");
+            if (null === value) $option.prop('selected', true);
+            $input.prepend($option);
         }
         if (this.readOnly) $input.prop('disabled', true);
         if (this.defaultValue) $input.data('defaultValue', this.defaultValue);
