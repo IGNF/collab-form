@@ -5,38 +5,41 @@ import {errors} from '../../messages';
 class ChoiceAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
+        
         let listOfValues = options.listOfValues;
         this.multiple = ('multiple' in options) ? options.multiple : false;
 
         if (Array.isArray(listOfValues)) {
-            this.listOfValues = {};
-            for (let index in listOfValues) {
-                let val = listOfValues[index];
-                this.listOfValues[val] = val;
-            }
+            this.listOfValues = new Map();  // Pour garder l'ordre des cles
+			listOfValues.forEach(val => {
+				if (null === val) val = "";
+				this.listOfValues.set(val, val);
+			});
         } else if (listOfValues instanceof Object && listOfValues.constructor === Object) {
             this.listOfValues = listOfValues;
-        } else {
-            throw new Error('listOfValues is not correctly defined')
-        }
+        } else throw new Error('listOfValues is not correctly defined');
     }
 
     /**
      * @returns {JQuery object}
      */
     getDOM(value) {
+        let val = (null === value) ? "" : value;
         var $input = $(`<select id="${this.id}" name="${this.name}" class="feature-attribute combobox" data-form-ref="${this.formId}">`);
 
-        for(let key in this.listOfValues) {
-            let item = this.listOfValues[key] ? this.listOfValues[key] : "";
-            key = (key && key != "null") ? key : "";
-            
-            let $option = $(`<option value="${item}">${key}</option>`);
-            if (value === item) {
-                $option.prop('selected', true);
-            }
-            $input.append($option);
-        };
+        let list;
+		if (this.listOfValues instanceof Map) {	// Issu d'un tableau (mis sous forme de Map pour conserver l'ordre des cles)
+		  list = this.listOfValues;
+		} else list = Object.entries(this.listOfValues);
+
+		for (const [key, value] of list) {
+			let v = (null === value) ? "" : value;
+			let $option = $(`<option value="${v}">${key}</option>`);
+			if (v === val) {
+				$option.prop('selected', true);
+			}
+			$input.append($option);
+		}
 
         if (this.readOnly) $input.prop('disabled', true);
         if (this.defaultValue) $input.data('defaultValue', this.defaultValue);
