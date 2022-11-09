@@ -1,11 +1,17 @@
+const ign_collab_form = {
+    ignoreReadOnly: false    
+}
+
 class Attribute {
     constructor(id, name, formId, options = {}) {
+        let readOnly = ign_collab_form.ignoreReadOnly ? false : ('readOnly' in options) ? options.readOnly : false;
+
         this.id = "attr-"+id,
         this.name = name;
         this.formId = formId;
         this.nullable = ('nullable' in options) ? options.nullable : (('mandatory' in options) ? !options.mandatory : true); //contrainte en bd
         this.required =  ('required' in options) ? options.required : false; //contrainte de validation cliente
-        this.readOnly = ('readOnly' in options) ? options.readOnly : false; 
+        this.readOnly = readOnly;
         this.description = ('description' in options) ? options.description : '';
         this.title = ('title' in options) ? options.title : name;
         this.automatic = ('automatic' in options) ? options.automatic : false;
@@ -98,5 +104,5 @@ class Attribute {
     }
 }
 
-export {Attribute};
+export { Attribute, ign_collab_form };
 

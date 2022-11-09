@@ -1,14 +1,16 @@
 import { FillConstraint } from "./fill-constraint";
-import { Attribute } from './Attribute/Attribute';
+import { Attribute, ign_collab_form } from './Attribute/Attribute';
 import { AttributeFactory } from './AttributeFactory';
 require('../jeux-attributs.js');
 
 class Form {
-    constructor(containerSelector, id) {
+    constructor(containerSelector, id, ignoreReadOnly = false) {
         this.id = id;
         this.attributes = [];
         this.fillConstraints = new FillConstraint(this.id);
         this.containerSelector = containerSelector ? containerSelector : "#fiche";
+
+        ign_collab_form.ignoreReadOnly = ignoreReadOnly;
     }
 
     getAttribute(id) {
