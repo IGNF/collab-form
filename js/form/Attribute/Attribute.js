@@ -49,7 +49,7 @@ class Attribute {
         }
         str += '>' + this.title + '</label>';
         var $label = $(str);
-        if (!this.nullable) {
+        if (!this.nullable || this.required) {
             $label.addClass('required');
         }
         return $label;
