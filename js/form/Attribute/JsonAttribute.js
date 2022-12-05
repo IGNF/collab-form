@@ -1,6 +1,7 @@
 import Ajv from "ajv";
 const localize = require("ajv-i18n")
 import { Attribute } from './Attribute';
+import { JsonAttributeErrorsFactory } from '../JsonAttributeErrors';
 import {errors} from '../../messages';
 
 class JsonValueFactory {
@@ -29,22 +30,13 @@ class JsonValueFactory {
                 break;
             case 'integer':
             case 'number':
-                let mask = ('integer' === type) ? 'mask_int' : `mask_${type}`;
-                $elt = $('<input>', { class: mask, type: "number" });
-                if ('minimum' in definition) {
-                    $elt.attr('min', definition.minimum);
-                }
-                if ('maximum' in definition) {
-                    $elt.attr('max', definition.maximum);
-                }
+                let mask = ('integer' === type) ? 'mask_int' : 'mask_number';
+                $elt = $('<input>', { class: mask, type: "text" });
                 break;
             case 'boolean':
-                let strValue = (definition.value === null) ? '' : Boolean(definition.value).toString();
+                let strValue = Boolean(definition.value).toString();
 
                 let options = {};
-                if (! definition.mandatory) {
-                    options['<Sans valeur>'] = '';
-                }
                 $.extend(options, { 'Oui': 'true', 'Non': 'false'} );
                 $elt = $('<select>');
                 for (const [text, value] of Object.entries(options)) {
@@ -74,7 +66,6 @@ class JsonValueFactory {
         return $elt;
     }   
 }
-
 
 class JsonAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
@@ -291,7 +282,7 @@ class JsonAttribute extends Attribute {
     getNormalizedValue() {
         let properties = (this.jsonSchema.type === 'array') ? this.jsonSchema.items.properties : this.jsonSchema.properties;
        
-        let value = [];
+        let values = [];
         $(`#${this.id} .json-form`).each((idx0, jsForm) => {
             let jsObject = {};
             $(jsForm).find('.json-row').each((idx1, jsRow) => {
@@ -299,7 +290,11 @@ class JsonAttribute extends Attribute {
                 
                 let key = $jsRow.find('.json-key').data('key');
                 let value = $jsRow.find('.json-value :input').val();
-                if (! value) return;
+                
+                if ("" === value) {
+                    jsObject[key] = null;  
+                    return;     
+                }
 
                 switch(properties[key].type) {
                     case 'boolean':
@@ -316,41 +311,18 @@ class JsonAttribute extends Attribute {
                 jsObject[key] = value;   
             });
             if (Object.keys(jsObject).length) {
-                value.push(jsObject);
+                values.push(jsObject);
             }
         });
-        if (! value.length) return null;
-        if ('object' === this.jsonSchema.type) {
-            value = value[0];    
-        }
-
-        return value;
+        if (! values.length) return null;
+        return ('object' === this.jsonSchema.type) ? values[0] : values;
     }
 
     normalize(value) {}
 
     formatErrors(errors) {
-        let _errors = {};
-        errors.forEach(error => {
-            let res = /\[(\d+)\]/.exec(error.dataPath);
-            let num = res[1];
-            if (num in _errors) {
-                _errors[num].push(error.message);
-            } else _errors[num] = [error.message];
-        });
-
-        let type = this.jsonSchema.type;
-        
-        let messages = [];
-        if (type === 'object') {
-            this.error = _errors[0].join('<br>');
-        } else {
-            for (const [num, errs] of Object.entries(_errors)) {
-                messages.push(`Objet ${num} :`);
-                messages = messages.concat(errs);
-            }
-            this.error = messages.join('<br>');
-        }
+        let jsErrors = JsonAttributeErrorsFactory.create(this.jsonSchema.type);
+        this.error = jsErrors.format(errors);
     }
 
     validate(value) {
@@ -379,6 +351,5 @@ class JsonAttribute extends Attribute {
         return valid;
     }
 }
-
 
 export {JsonAttribute};

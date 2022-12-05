@@ -84,10 +84,9 @@ class Attribute {
             && $el.data('required')       //caractere obligatoire : ne peut pas avoir la valeur par defaut
             && !$el.prop('disabled')) {   // si disabled : ne doit pas etre rempli
             // ne doit pas avoir la valeur par défaut si required
-            var valdef = ($el.data('default-value')===undefined ? '' : $this.data('default-value'));
-            if ($el.val() == valdef || !value) {
+            var valdef = ($el.data('defaultValue') === undefined) ? '' : $this.data('defaultValue');
+            if ($el.val() === valdef || !value) {
                 this.error = 'Valeur obligatoire' + (valdef!=='' ? ' et différente de '+valdef : '');
-                
                 return false;
             }
         }
