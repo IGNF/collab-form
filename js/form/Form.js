@@ -111,8 +111,10 @@ class Form {
                 if (constraint.type === 'mapping') {
                     let filter = (value in constraint.mapping) ? constraint.mapping[value] : null;
                     options['filter'] = filter;
+                    disabled = value ? false : true;
+                } else if (constraint.type === 'regex') {
+                    disabled = ! (new RegExp(constraint.regex).test(value));
                 }
-                disabled = value ? false : true;
             }
 
             $(this).combobox(options);
