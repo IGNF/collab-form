@@ -1,4 +1,7 @@
-moment = require('moment');
+import moment from 'moment';
+import jquery from "jquery";
+export default (window.$ = window.jQuery = jquery,window.moment = moment);
+
 require('tempusdominus-bootstrap-4/build/css/tempusdominus-bootstrap-4.css');
 require('tempusdominus-bootstrap-4/build/js/tempusdominus-bootstrap-4.js');
 import {Attribute} from './Attribute';

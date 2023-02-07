@@ -231,7 +231,7 @@ const typesIgnored = [
 function createForm($container, id, theme, values = {}) {
     if (!('attributes' in theme && theme.attributes.length)) return null;
 
-    let $div = $('div class="feature-form"></div>');
+    let $div = $('<div class="feature-form"></div>');
     let selector = `theme-${id}`;
     let $table = $(`<table id=${selector} class="table"></table>`);
 
@@ -250,7 +250,8 @@ function createForm($container, id, theme, values = {}) {
             $td.attr('colspan', 2);
         }
 
-        let attribute = form.addAttributeFromTheme(id, themeAttr);
+        let attrId = "".concat(id, "-").concat(i);
+        let attribute = form.addAttributeFromTheme(attrId, themeAttr);
         let value = values[attribute.name] ? values[attribute.name] : null;
         form.append(attribute, $td, value);
 
