@@ -4,7 +4,8 @@ const errors = {
     "invalid_url": "La valeur n'est pas une URL valide",
     "invalid regex": "La valeur ne correspond pas à l'expression régulière",
     "unexpected_type": "La valeur est d'un type inattendu",
-    "title": "Erreur"
+    "title": "Erreur",
+    "invalid_date": "Le format de la date est invalide"
 }
 
 export {errors};

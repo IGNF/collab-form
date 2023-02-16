@@ -1,4 +1,6 @@
 import {Attribute} from './Attribute';
+import jquery from "jquery";
+export default (window.$ = window.jQuery = jquery);
 require('combobox');
 import {errors} from '../../messages';
 

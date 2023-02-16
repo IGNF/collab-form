@@ -4,13 +4,22 @@ import { AttributeFactory } from './AttributeFactory';
 require('../jeux-attributs.js');
 
 class Form {
-    constructor(containerSelector, id, ignoreReadOnly = false) {
+    /**
+     * 
+     * @param {String} containerSelector 
+     * @param {String} id 
+     * @param {Boolean} ignoreReadOnly lorsqu on travaille sur des signalements, meme si la table est en lecture seule l'attribut reste ouvert en écriture
+     * cet attribut doit donc etre a true lorsqu'on crée le formulaire pour la saisie d'un signalement
+     * @param {String} style web|mobile
+     */
+    constructor(containerSelector, id, ignoreReadOnly = false, style = 'web') {
         this.id = id;
         this.attributes = [];
         this.fillConstraints = new FillConstraint(this.id);
         this.containerSelector = containerSelector ? containerSelector : "#fiche";
 
         ign_collab_form.ignoreReadOnly = ignoreReadOnly;
+        ign_collab_form.style = style
     }
 
     getAttribute(id) {
@@ -226,16 +235,20 @@ const typesIgnored = [
  * @param {string} id un identifiant pour le formulaire 
  * @param {object} theme le theme tel que renvoyé par l'api
  * @param {object} values un table clé [le nom de l'attribut] valeur [la value de l'attribut]
+ * @param {Boolean} ignoreReadOnly lorsqu on travaille sur des signalements, meme si la table est en lecture seule l'attribut reste ouvert en écriture
+ * ce parametre doit donc etre a true lorsqu'on crée le formulaire pour la saisie d'un signalement
+ * @param {String} style web|mobile
  * @returns 
  */
-function createForm($container, id, theme, values = {}) {
+function createForm($container, id, theme, values = {}, ignoreReadOnly = false, style = 'web') {
     if (!('attributes' in theme && theme.attributes.length)) return null;
+    if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
 
     let $div = $('<div class="feature-form"></div>');
     let selector = `theme-${id}`;
     let $table = $(`<table id=${selector} class="table"></table>`);
 
-    let form = new Form($table, id);
+    let form = new Form($table, id, false, ignoreReadOnly, style);
     $div.append($table);
     $container.append($div);
 

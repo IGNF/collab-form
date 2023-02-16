@@ -18,7 +18,9 @@
   "dependencies": {
     "ajv-i18n": "^4.2.0",
     "combobox": "git+http://gitlab.dockerforge.ign.fr/ign/combobox.git",
-    "moment": "^2.29.1",
-    "tempusdominus-bootstrap-4": "^5.39.0"
+    "moment": "^2.29.1"
+  },
+  "devDependencies": {
+    "sass": "^1.58.1"
   }
 }

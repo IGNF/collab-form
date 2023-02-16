@@ -12,8 +12,9 @@ class DoubleAttribute extends Attribute {
      * @returns {JQuery object}
      */
      getDOM(value) {
-        let $input = super.getDOM(value);
+        let $input = super.getDOM(value, "number");
         $input.addClass('mask_number');
+        $input.attr('step', 0.001);
         
         return $input;
     }
@@ -21,7 +22,21 @@ class DoubleAttribute extends Attribute {
     // a lancer apres creation dans le dom
     init() {
         super.init();
-        $("#"+this.id).numericMask(true);
+
+        $("#"+this.id).on("input", () => {
+            let iniVal = $("#"+this.id).val()
+            let value = parseFloat(iniVal);
+            if (isNaN(value)) {
+                value = null;
+            }
+            // pas plus de 3 decimales
+            if (value*1000 - Math.floor(value*1000) != 0) {
+                value = value.toFixed(3);
+            }
+            if (value != iniVal) {
+                $("#"+this.id).val(value);
+            }
+        });
 
         if (this.automatic) {
             $("#"+this.id).prop('disabled', true);

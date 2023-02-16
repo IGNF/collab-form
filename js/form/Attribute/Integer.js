@@ -12,8 +12,9 @@ class IntegerAttribute extends Attribute {
      * @returns {JQuery object}
      */
     getDOM(value) {
-        let $input = super.getDOM(value);
+        let $input = super.getDOM(value, "number");
         $input.addClass('mask_int');
+        $input.attr('step', 1);
         
         return $input;
     }
@@ -21,7 +22,17 @@ class IntegerAttribute extends Attribute {
     // a lancer apres creation dans le dom
     init() {
         super.init();
-        $("#"+this.id).numericMask();
+
+        $("#"+this.id).on("input", () => {
+            let iniVal = $("#"+this.id).val();
+            let value = parseInt(iniVal);
+            if (isNaN(value)) {
+                value = null;
+            }
+            if (value != iniVal) {
+                $("#"+this.id).val(value);
+            }
+        });
 
         if (this.automatic) {
             $("#"+this.id).prop('disabled', true);

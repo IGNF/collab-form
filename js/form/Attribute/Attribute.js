@@ -1,5 +1,6 @@
 const ign_collab_form = {
-    ignoreReadOnly: false    
+    ignoreReadOnly: false,
+    style: 'web'
 }
 
 class Attribute {
@@ -27,8 +28,8 @@ class Attribute {
      * 
      * @return {JQuery object}
      */
-    getDOM(value) {
-        let $input = $(`<input class="feature-attribute" id="${this.id}" type="text" data-form-ref="${this.formId}" name="${this.name}"/>`);
+    getDOM(value, type='text') {
+        let $input = $(`<input class="feature-attribute" id="${this.id}" type="${type}" data-form-ref="${this.formId}" name="${this.name}"/>`);
 
         if (value !== null) $input.val(value);
         if (this.readOnly) $input.prop('disabled', true);
@@ -63,11 +64,9 @@ class Attribute {
             $("#"+this.id).prop('disabled', true);
         }
         if (this.min){
-            let $td = $("#"+this.id).closest("td");
             $("#"+this.id).prop('min', this.min);
         }
         if (this.max){
-            let $td = $("#"+this.id).closest("td");
             $("#"+this.id).prop('max', this.max);
         }
         if (!this.nullable || this.required){
