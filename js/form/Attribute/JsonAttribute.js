@@ -213,6 +213,7 @@ class JsonAttribute extends Attribute {
 
         /* Ajout du callback click sur le bouton remove */
         $(`#${this.id} #${jsformId} .btn-remove`).on('click', (e) => {
+            e.preventDefault();
             this.handleRemove(e);
         });
 
@@ -265,7 +266,8 @@ class JsonAttribute extends Attribute {
      */
     initCallbacks() {
         /* add */
-        $(`#${this.id} .btn-add`).on('click', () => {
+        $(`#${this.id} .btn-add`).on('click', (e) => {
+            e.preventDefault();
             this.add();
         });
     }

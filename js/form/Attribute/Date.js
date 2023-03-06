@@ -1,4 +1,3 @@
-import moment from 'moment';
 import {Attribute} from './Attribute';
 import {errors} from '../../messages';
 

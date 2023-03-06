@@ -15,10 +15,11 @@
   ],
   "author": "mjacopucci",
   "license": "Propriétaire",
-  "dependencies": {
+  "peerDependencies": {
     "ajv-i18n": "^4.2.0",
+    "jsutils": "http://gitlab.dockerforge.ign.fr/ign/jsutils.git#master",
     "combobox": "git+http://gitlab.dockerforge.ign.fr/ign/combobox.git",
-    "moment": "^2.29.1"
+    "moment": "^2.29.1"D
   },
   "devDependencies": {
     "sass": "^1.58.1"

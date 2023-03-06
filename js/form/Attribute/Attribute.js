@@ -44,12 +44,14 @@ class Attribute {
      * @returns {JQuery object}
      */
     getDOMLabel() {
-        var str = '<label for="' + this.id + '" class="control-label"';
+        let str = '<label for="' + this.id + '" class="control-label"';
         if (this.description) {
-            str += ' data-toggle="tooltip" title="' + this.description + '"';
+            let desc = this._escapeHtml(this.description);
+            str += ` data-toggle="tooltip" title="${desc}"`;
         }
         str += '>' + this.title + '</label>';
-        var $label = $(str);
+        
+        let $label = $(str);
         if (!this.nullable || this.required) {
             $label.addClass('required');
         }
@@ -99,6 +101,12 @@ class Attribute {
 
     normalize(value) {
         return value;
+    }
+
+    _escapeHtml(text) {
+        return text.replace(/[\"&<>]/g, (a) => {
+            return { '"': '&quot;', '&': '&amp;', '<': '&lt;', '>': '&gt;' }[a];
+        });
     }
 }
 
