@@ -105,7 +105,14 @@ class Form {
     initCombobox() {
         const self = this;
         const isMobile = (ign_collab_form.style === 'mobile');
-        $(`select.combobox[data-form-ref=${self.id}]`).each(function() {
+        if (isMobile) {
+            console.log('mobile')
+            $(`[data-type="checkbox"] select[data-form-ref=${self.id}]`, self.containerSelector).each(function() {
+                self.choice(this, options, v => onselect(this, v));
+            })
+        }
+
+        $(`select.combobox[data-form-ref=${self.id}]`, self.containerSelector).each(function() {
             const sel = this;
             let options = {
                 appendTo: self.containerSelector,
@@ -131,6 +138,7 @@ class Form {
             if (isMobile) {
                 self.choice(sel, options, v => onselect(sel, v));
                 $(sel).prop('disabled', disabled);
+                self.setFilter(sel, options.filter)
                 // Restet value
                 $(sel).data('setDefault', function() {
                     sel.value = options.defaultValue || '';
@@ -143,39 +151,39 @@ class Form {
                     onselect (sel, item.item.value);
                 })
             }
-
-            // Select an option
-            function onselect(sel, value) {
-                let dependents = $(sel).data('dependents');
-                if (! dependents) return;
-
-                $.each(dependents, function(index, dependent) {
-                    let $attribute = $(`[name="${dependent}"][data-form-ref=${self.id}]`);
-                    
-                    let constraint = $attribute.data('constraint');
-                    if (constraint.type === 'mapping') {                            
-                        let disabled = value ? false : true;                            
-                        let filter = null;
-                        if (value) {
-                            filter = (value in constraint.mapping) ? constraint.mapping[value] : null;
-                        }
-    
-                        if (isMobile) {
-                            $attribute.prop('disabled', disabled);
-                            $attribute.data('filter', filter)
-                            // Declenche en cascade
-                            $attribute.data('setDefault')();
-                        } else {
-                            $attribute.combobox("setDisabled", disabled);
-                            $attribute.combobox("setFilter", filter);
-                            $attribute.combobox("setDefaultOption"); // Declenche en cascade
-                        }
-                    } else if ('regex' === constraint.type) {
-                        self.checkRegexConstraint($attribute, value, constraint.regex);
-                    }
-                });
-            };
         });
+
+        // Select an option
+        function onselect(sel, value) {
+            let dependents = $(sel).data('dependents');
+            if (! dependents) return;
+
+            $.each(dependents, function(index, dependent) {
+                let $attribute = $(`[name="${dependent}"][data-form-ref=${self.id}]`);
+                
+                let constraint = $attribute.data('constraint');
+                if (constraint.type === 'mapping') {                            
+                    let disabled = value ? false : true;                            
+                    let filter = null;
+                    if (value) {
+                        filter = (value in constraint.mapping) ? constraint.mapping[value] : null;
+                    }
+
+                    if (isMobile) {
+                        $attribute.prop('disabled', disabled);
+                        self.setFilter($attribute, filter)
+                        // Declenche en cascade
+                        $attribute.data('setDefault')();
+                    } else {
+                        $attribute.combobox("setDisabled", disabled);
+                        $attribute.combobox("setFilter", filter);
+                        $attribute.combobox("setDefaultOption"); // Declenche en cascade
+                    }
+                } else if ('regex' === constraint.type) {
+                    self.checkRegexConstraint($attribute, value, constraint.regex);
+                }
+            });
+        };
     }
 
     init() {
@@ -233,16 +241,19 @@ class Form {
     choice(sel, options, onselect) {
         const popup = $('<div>').addClass('select-popup').attr('aria-hidden', true).appendTo($(sel).parent());
         const form = $('<form>').addClass('visible').attr('data-role','dialog').appendTo(popup);
+        $('<div>').addClass('title').text($(sel).parent().attr('data-title')).appendTo(form)
         // Search
-        $('<input>').attr('type', 'search')
-            .attr('placeholder', 'rechercher...')
-            .on('keyup', function() {
-                const rex = new RegExp(this.value, 'i')
-                $('li', ul).each(function() {
-                    this.setAttribute('aria-hidden', !rex.test(this.innerText))
+        if ($('option', sel).length > 10) {
+            $('<input>').attr('type', 'search')
+                .attr('placeholder', 'rechercher...')
+                .on('keyup', function() {
+                    const rex = new RegExp(this.value, 'i')
+                    $('li', ul).each(function() {
+                        this.setAttribute('aria-hidden', !rex.test(this.innerText))
+                    })
                 })
-            })
-            .appendTo(form)
+                .appendTo(form)
+        }
         // Options list
         const ul = $('<UL>').attr('data-role','select').appendTo(form);
         $('option', sel).each(function() {
@@ -276,6 +287,27 @@ class Form {
                 popup.attr('aria-hidden', false);
             })
             .data('menu', popup);
+    }
+
+    /** Filter select options
+     * @param {Element} sel
+     * @param {*} filter
+     */
+    setFilter(sel, filter) {
+        $(sel).data('filter', filter);
+        // Reset options
+        const li = sel.parentNode.querySelectorAll('li')
+        Array.prototype.forEach.call(li, opt => {
+            $(opt).removeClass('filtered')
+        })
+        // Filter options
+        if (filter) {
+            Array.prototype.forEach.call(li, opt => {
+                if (filter.includes(opt.value)) {
+                    $(opt).addClass('filtered')
+                }
+            })
+        }
     }
 
      /**
@@ -331,7 +363,7 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
         if (typesIgnored.includes(type)) return true;
         let $row = $('<tr></tr>');
         $row.attr('data-type', type);
-        let $td = $('<td></td>');
+        let $td = $('<td></td>').attr('data-title', themeAttr.title);
 
         if (type === 'jsonvalue') {
             $td.attr('colspan', 2);
