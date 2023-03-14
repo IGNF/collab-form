@@ -245,7 +245,7 @@ class Form {
         const form = $('<form>').addClass('visible').attr('data-role','dialog').appendTo(popup);
         $('<div>').addClass('title').text($(sel).parent().attr('data-title')).appendTo(form)
         // Search
-        if ($('option', sel).length > 10) {
+        if ($('option', sel).length > 8) {
             $('<input>').attr('type', 'search')
                 .attr('placeholder', 'rechercher...')
                 .on('keyup', function() {
