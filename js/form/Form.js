@@ -106,8 +106,11 @@ class Form {
         const self = this;
         const isMobile = (ign_collab_form.style === 'mobile');
         if (isMobile) {
-            console.log('mobile')
             $(`[data-type="checkbox"] select[data-form-ref=${self.id}]`, self.containerSelector).each(function() {
+                let options = {
+                    appendTo: self.containerSelector,
+                    defaultValue: $(this).data('defaultValue')   
+                };
                 self.choice(this, options, v => onselect(this, v));
             })
         }
@@ -118,7 +121,6 @@ class Form {
                 appendTo: self.containerSelector,
                 defaultValue: $(this).data('defaultValue')   
             };
-            
             let dependency = $(this).data('dependency');
             
             let disabled = false;
@@ -257,14 +259,18 @@ class Form {
         // Options list
         const ul = $('<UL>').attr('data-role','select').appendTo(form);
         $('option', sel).each(function() {
-            $('<li>').text(this.value || '<sans valeur>').appendTo(ul)
-                .addClass($(sel).val() == this.innerText ? 'selected' : '')
+            $('<li>')
+                .text(this.value ? this.innerText : '<sans valeur>')
+                .data('value', this.value)
+                .appendTo(ul)
+                .addClass($(sel).val() == this.value ? 'selected' : '')
                 .click(e => {
+                    const val = $(e.target).data('value');
                     popup.attr('aria-hidden', true);
-                    $(sel).val(e.target.innerText)
+                    $(sel).val(val)
                     $('li', ul).removeClass('selected')
                     e.target.className = 'selected';
-                    onselect (e.target.innerText);
+                    onselect (val);
                 })
         })
         // Cancel button
@@ -363,7 +369,7 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
         if (typesIgnored.includes(type)) return true;
         let $row = $('<tr></tr>');
         $row.attr('data-type', type);
-        let $td = $('<td></td>').attr('data-title', themeAttr.title);
+        let $td = $('<td></td>').attr('data-title', themeAttr.title || themeAttr.name);
 
         if (type === 'jsonvalue') {
             $td.attr('colspan', 2);
