@@ -103,11 +103,13 @@ class Form {
     }
 
     initCombobox() {
-        let self = this;
+        const self = this;
+        const isMobile = (ign_collab_form.style === 'mobile');
         $(`select.combobox[data-form-ref=${self.id}]`).each(function() {
+            const sel = this;
             let options = {
                 appendTo: self.containerSelector,
-                defaultValue:$(this).data('defaultValue')   
+                defaultValue: $(this).data('defaultValue')   
             };
             
             let dependency = $(this).data('dependency');
@@ -126,13 +128,26 @@ class Form {
                 }
             }
 
-            $(this).combobox(options);
-            $(this).combobox("setDisabled", disabled);
-            $(this).combobox().on('comboboxselect', function(event, item) {
-                let value = item.item.value;
+            if (isMobile) {
+                self.choice(sel, options, v => onselect(sel, v));
+                $(sel).prop('disabled', disabled);
+                // Restet value
+                $(sel).data('setDefault', function() {
+                    sel.value = options.defaultValue || '';
+                    onselect(sel, options.defaultValue);
+                })
+            } else {
+                $(this).combobox(options);
+                $(this).combobox("setDisabled", disabled);
+                $(this).combobox().on('comboboxselect', function(event, item) {
+                    onselect (sel, item.item.value);
+                })
+            }
 
-                let dependents = $(this).data('dependents');
-                if (! dependents)   return;
+            // Select an option
+            function onselect(sel, value) {
+                let dependents = $(sel).data('dependents');
+                if (! dependents) return;
 
                 $.each(dependents, function(index, dependent) {
                     let $attribute = $(`[name="${dependent}"][data-form-ref=${self.id}]`);
@@ -145,14 +160,21 @@ class Form {
                             filter = (value in constraint.mapping) ? constraint.mapping[value] : null;
                         }
     
-                        $attribute.combobox("setDisabled", disabled);
-                        $attribute.combobox("setFilter", filter);
-                        $attribute.combobox("setDefaultOption"); // Declenche en cascade
+                        if (isMobile) {
+                            $attribute.prop('disabled', disabled);
+                            $attribute.data('filter', filter)
+                            // Declenche en cascade
+                            $attribute.data('setDefault')();
+                        } else {
+                            $attribute.combobox("setDisabled", disabled);
+                            $attribute.combobox("setFilter", filter);
+                            $attribute.combobox("setDefaultOption"); // Declenche en cascade
+                        }
                     } else if ('regex' === constraint.type) {
                         self.checkRegexConstraint($attribute, value, constraint.regex);
                     }
                 });
-            });
+            };
         });
     }
 
@@ -205,6 +227,57 @@ class Form {
         return attribute;
     }
 
+    /** Display a choice dialog
+     * @param {Element} sel input select
+     */
+    choice(sel, options, onselect) {
+        const popup = $('<div>').addClass('select-popup').attr('aria-hidden', true).appendTo($(sel).parent());
+        const form = $('<form>').addClass('visible').attr('data-role','dialog').appendTo(popup);
+        // Search
+        $('<input>').attr('type', 'search')
+            .attr('placeholder', 'rechercher...')
+            .on('keyup', function() {
+                const rex = new RegExp(this.value, 'i')
+                $('li', ul).each(function() {
+                    this.setAttribute('aria-hidden', !rex.test(this.innerText))
+                })
+            })
+            .appendTo(form)
+        // Options list
+        const ul = $('<UL>').attr('data-role','select').appendTo(form);
+        $('option', sel).each(function() {
+            $('<li>').text(this.value || '<sans valeur>').appendTo(ul)
+                .addClass($(sel).val() == this.innerText ? 'selected' : '')
+                .click(e => {
+                    popup.attr('aria-hidden', true);
+                    $(sel).val(e.target.innerText)
+                    $('li', ul).removeClass('selected')
+                    e.target.className = 'selected';
+                    onselect (e.target.innerText);
+                })
+        })
+        // Cancel button
+        $('<button>')
+            .attr('data-role','dialogBt')
+            .attr('type', 'button')
+            .text('annuler')
+            .appendTo(form)
+            .click(e => {
+                e.preventDefault();
+                e.stopPropagation();
+                popup.attr('aria-hidden', true);
+            });
+        // Remove interaction on select input
+        $(sel).on('mousedown', e => e.preventDefault())
+            // Show popup on click
+            .on('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                popup.attr('aria-hidden', false);
+            })
+            .data('menu', popup);
+    }
+
      /**
      * @param {Attribute} attribute
      * @param {mixed} value
@@ -248,7 +321,7 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
     let selector = `theme-${id}`;
     let $table = $(`<table id=${selector} class="table"></table>`);
 
-    let form = new Form($table, id, false, ignoreReadOnly, style);
+    let form = new Form($table, id, ignoreReadOnly, style);
     $div.append($table);
     $container.append($div);
 
@@ -257,6 +330,7 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
         let type = themeAttr.type.toLowerCase();
         if (typesIgnored.includes(type)) return true;
         let $row = $('<tr></tr>');
+        $row.attr('data-type', type);
         let $td = $('<td></td>');
 
         if (type === 'jsonvalue') {
