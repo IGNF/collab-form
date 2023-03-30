@@ -217,11 +217,7 @@ class Form {
     addAttributeFromTheme(id, themeAttribute) {
         // Gestion des listes de valeurs
         if ("values" in themeAttribute && themeAttribute["values"]) {
-            if (typeof themeAttribute["values"] === "string") {
-                themeAttribute["listOfValues"] = themeAttribute["values"].split("|");
-            } else if (themeAttribute["values"] instanceof Object) {
-                themeAttribute["listOfValues"] = themeAttribute["values"]
-            }
+            themeAttribute["listOfValues"] = themeAttribute["values"];
         }
 
         if (themeAttribute["original"] && Object.keys(themeAttribute["original"]).length > 0) {
