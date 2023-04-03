@@ -25,6 +25,7 @@ class DoubleAttribute extends Attribute {
 
         $("#"+this.id).on("input", () => {
             let iniVal = $("#"+this.id).val()
+            if (!iniVal) return; // pb sur cordova lorsqu on tape 2. la valeur est vide
             let value = parseFloat(iniVal);
             if (isNaN(value)) {
                 value = null;
@@ -66,6 +67,11 @@ class DoubleAttribute extends Attribute {
         }
 
         if (null === value) return true;
+
+        let floatValue = parseFloat(value);
+        if (isNaN(floatValue) || value != floatValue) {
+            this.error = errors.invalid_double;
+        }
         
         if (
             (this.max && Number(value) > Number(this.max))
