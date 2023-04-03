@@ -15,9 +15,9 @@ class AttributeFactory {
         const typel = type.toLowerCase();
         
         let hasList = false;
-        if (Array.isArray(options.listOfValues) && options.listOfValues.length != 0) {
+        if (Array.isArray(options.enum) && options.enum.length != 0) {
             hasList = true;
-        } else if (options.listOfValues instanceof Object && Object.keys(options.listOfValues).length){
+        } else if (options.enum instanceof Object && Object.keys(options.enum).length){
             hasList = true;
         }
         if (canBeSelect.indexOf(typel) != -1 && hasList) {

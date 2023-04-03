@@ -1,5 +1,6 @@
 import {Attribute} from './Attribute';
 import {errors} from '../../messages';
+import moment from 'moment';
 
 class DateAttribute extends Attribute {
     constructor(id, name, mask = 'date', formId, options = {}) {

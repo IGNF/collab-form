@@ -8,7 +8,7 @@ class ChoiceAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         
-        let listOfValues = options.listOfValues;
+        let listOfValues = options.enum;
         this.multiple = ('multiple' in options) ? options.multiple : false;
 
         if (Array.isArray(listOfValues)) {
@@ -19,7 +19,7 @@ class ChoiceAttribute extends Attribute {
 			});
         } else if (listOfValues instanceof Object && listOfValues.constructor === Object) {
             this.listOfValues = listOfValues;
-        } else throw new Error('listOfValues is not correctly defined');
+        } else throw new Error('enum is not correctly defined');
     }
 
     /**

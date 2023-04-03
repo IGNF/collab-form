@@ -1,9 +1,12 @@
 import {Attribute} from './Attribute';
 
+/**
+ * userId doit etre ajoute dans les options du champs pour qu il puisse etre cree
+ */
 class LikeAttribute extends Attribute {
     constructor(id, name, formId, options) {
         super(id, name, formId, options);
-        if (!'userId' in options) {
+        if (!('userId' in options)) {
             throw new Error('Need userId to create Like attribute');
         }
         this.userId = options.userId;

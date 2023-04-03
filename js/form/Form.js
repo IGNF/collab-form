@@ -208,7 +208,7 @@ class Form {
             this.attributes[attribute.id] = attribute;
             return attribute;
         } catch(e) {
-            console.warn(e.message);
+            console.log(e.message);
             return null;
         }
         
@@ -217,7 +217,7 @@ class Form {
     addAttributeFromTheme(id, themeAttribute) {
         // Gestion des listes de valeurs
         if ("values" in themeAttribute && themeAttribute["values"]) {
-            themeAttribute["listOfValues"] = themeAttribute["values"];
+            themeAttribute["enum"] = themeAttribute["values"];
         }
 
         if (themeAttribute["original"] && Object.keys(themeAttribute["original"]).length > 0) {
@@ -337,7 +337,7 @@ const typesIgnored = [
 ];
 
 /**
- * 
+ * Création d'un formulaire pour la saisie d'un signalement a partir d un theme donne
  * @param {Jquery element} $container la div dans laquelle on veut construire le formulaire 
  * @param {string} id un identifiant pour le formulaire 
  * @param {object} theme le theme tel que renvoyé par l'api
@@ -345,9 +345,9 @@ const typesIgnored = [
  * @param {Boolean} ignoreReadOnly lorsqu on travaille sur des signalements, meme si la table est en lecture seule l'attribut reste ouvert en écriture
  * ce parametre doit donc etre a true lorsqu'on crée le formulaire pour la saisie d'un signalement
  * @param {String} style web|mobile
- * @returns 
+ * @returns Form
  */
-function createForm($container, id, theme, values = {}, ignoreReadOnly = false, style = 'web') {
+function createFormForTheme($container, id, theme, values = {}, style = 'web') {
     if (!('attributes' in theme && theme.attributes.length)) return null;
     if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
 
@@ -355,14 +355,14 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
     let selector = `theme-${id}`;
     let $table = $(`<table id=${selector} class="table"></table>`);
 
-    let form = new Form($table, id, ignoreReadOnly, style);
+    let form = new Form($table, id, true, style);
     $div.append($table);
     $container.append($div);
 
     for (var i in theme.attributes) {
         let themeAttr = theme.attributes[i];
         let type = themeAttr.type.toLowerCase();
-        if (typesIgnored.includes(type)) return true;
+        if (typesIgnored.includes(type)) continue;
         let $row = $('<tr></tr>');
         $row.attr('data-type', type);
         let $td = $('<td></td>').attr('data-title', themeAttr.title || themeAttr.name);
@@ -373,7 +373,8 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
 
         let attrId = "".concat(id, "-").concat(i);
         let attribute = form.addAttributeFromTheme(attrId, themeAttr);
-        let value = values[attribute.name] ? values[attribute.name] : null;
+        if (!attribute) continue;
+        let value = values[attribute.name] ?? null;
         form.append(attribute, $td, value);
 
         if (type !== 'jsonvalue') {
@@ -393,35 +394,72 @@ function createForm($container, id, theme, values = {}, ignoreReadOnly = false, 
 };
 
 /**
- * 
+ * Creation d un formulaire a partir de la definition de la table
+ * A utiliser dans le cadre de la saisie ou de la modification d un feature
  * @param {Jquery element} $container la div dans laquelle on veut construire le formulaire 
- * @param {string} id 
- * @param {Object} properties 
- */
- function createSimpleForm($container, id, properties) {
-    let $div = $('<div>', {class: 'feature-form'});
-    
-    let selector = `properties-${id}`;
-    let $table = $('<table>', {class: 'table', id: selector});
+ * @param {string} id un identifiant pour le formulaire 
+ * @param {object} table la table telle que renvoyée par l'api
+ * @param {object} values un tableau clé [le nom de l'attribut] valeur [la value de l'attribut]
+ * @param {String} style web|mobile
+ * @returns Form
+ **/
+function createFormForTable($container, id, table, values = {}, style = 'web') {
+    if (!('columns' in table && Object.keys(table.columns).length)) return null;
+    if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
 
-    let form = new Form($table, id);
+    let $div = $('<div class="feature-form"></div>');
+    let selector = `table-${id}`;
+    let $table = $(`<table id=${selector} class="table"></table>`);
+
+    let form = new Form($table, id, false, style);
     $div.append($table);
     $container.append($div);
 
-    if (properties !== Object(properties)) {
-        return form;
-    }
+    for (var i in table.columns) {
+        let column = table.columns[i];
+        let type = column.type.toLowerCase();
+        if (typesIgnored.includes(type) || table.id_name == column.name) continue;
+        let $row = $('<tr></tr>');
+        //homogeneisation des types @TODO faire autrement
+        let corrType = type;
+        switch (type) {
+            case "boolean":
+                corrType = "checkbox";
+                break;
+            case "string":
+                corrType = "text";
+                break;
+            case "choice":
+                corrType = "list";
+                break;
+        }
+        $row.attr('data-type', corrType);
+        let $td = $('<td></td>').attr('data-title', column.title || column.name);
 
-    for (const [name, value] of Object.entries(properties)) {
-        if (value === Object(value)) continue;  // geometrie par exemple
+        if (type === 'jsonvalue') {
+            $td.attr('colspan', 2);
+        }
 
-        let $row = $('<tr>');
-        $('<td>').append($('<label>', { class: 'control-label', html: name })).appendTo($row);
-        $('<td>', { html: value }).appendTo($row);
-        $table.append($row);
+        let attrId = "".concat(id, "-").concat(i);
+        let attribute = form.addAttributeFromFeatureAttributeType(attrId, column);
+        if (!attribute) continue;
+        let value = values[attribute.name] ?? null;
+        form.append(attribute, $td, value);
+
+        if (type !== 'jsonvalue') {
+            let $label = attribute.getDOMLabel();
+
+            var $tdLabel = $('<td></td>').append($label);
+            $row.append($tdLabel);
+        }
+
+        if (!$td.is(':empty')) {
+            $row.append($td);
+            $table.append($row);
+        }
     }
 
     return form;
-};
+}
 
-export { Form, createForm, createSimpleForm };
+export { Form, createFormForTable, createFormForTheme };
