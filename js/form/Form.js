@@ -374,7 +374,7 @@ function createFormForTheme($container, id, theme, values = {}, style = 'web') {
         let attrId = "".concat(id, "-").concat(i);
         let attribute = form.addAttributeFromTheme(attrId, themeAttr);
         if (!attribute) continue;
-        let value = values[attribute.name] ?? null;
+        let value = values[attribute.name] ? values[attribute.name] : null;
         form.append(attribute, $td, value);
 
         if (type !== 'jsonvalue') {
@@ -443,7 +443,7 @@ function createFormForTable($container, id, table, values = {}, style = 'web') {
         let attrId = "".concat(id, "-").concat(i);
         let attribute = form.addAttributeFromFeatureAttributeType(attrId, column);
         if (!attribute) continue;
-        let value = values[attribute.name] ?? null;
+        let value = values[attribute.name] ? values[attribute.name] : null;
         form.append(attribute, $td, value);
 
         if (type !== 'jsonvalue') {
