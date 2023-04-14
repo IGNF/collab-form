@@ -1,18 +1,19 @@
 import {Attribute} from './Attribute';
-import {errors} from '../../messages';
+import {Error} from '../Error';
 
 class DoubleAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         this.min = options.min_value;
         this.max = options.max_value;
+        this.type = "number";
     }
 
     /**
      * @returns {JQuery object}
      */
      getDOM(value) {
-        let $input = super.getDOM(value, "number");
+        let $input = super.getDOM(value, this.type);
         $input.addClass('mask_number');
         $input.attr('step', 0.001);
         
@@ -58,7 +59,8 @@ class DoubleAttribute extends Attribute {
         this.error = null;
         value = value ? value : this.getNormalizedValue();
         if (!value && (!this.nullable || this.required) && !this.conditionField) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
 
@@ -70,14 +72,18 @@ class DoubleAttribute extends Attribute {
 
         let floatValue = parseFloat(value);
         if (isNaN(floatValue) || value != floatValue) {
-            this.error = errors.invalid_double;
+            let error = new Error("invalid_double");
+            this.error = error.getMessage();
         }
         
-        if (
-            (this.max && Number(value) > Number(this.max))
-            || (this.min && Number(value) < Number(this.min))
-        ) {
-            this.error = errors.min_max;
+        if (this.max && Number(value) > Number(this.max)) {
+            let error = new Error("max", [this.max]);
+            this.error = error.getMessage();
+            return false;
+        }
+        if (this.min && Number(value) < Number(this.min)) {
+            let error = new Error("min", [this.min]);
+            this.error = error.getMessage();
             return false;
         }
 

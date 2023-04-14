@@ -10,6 +10,7 @@ class LikeAttribute extends Attribute {
             throw new Error('Need userId to create Like attribute');
         }
         this.userId = options.userId;
+        this.type = "like";
     }
 
     getDefaultValue() {

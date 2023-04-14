@@ -1,4 +1,4 @@
 import {Form, createFormForTheme, createFormForTable} from './js/form/Form';
-import {LinkUpdater} from './js/form/Attribute/Document'
+import {LinkUpdater, DocumentAttribute} from './js/form/Attribute/Document'
 
-export {createFormForTheme, createFormForTable, Form, LinkUpdater};
+export {createFormForTheme, createFormForTable, Form, LinkUpdater, DocumentAttribute};

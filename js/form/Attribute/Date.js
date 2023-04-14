@@ -1,11 +1,11 @@
 import {Attribute} from './Attribute';
-import {errors} from '../../messages';
+import {Error} from '../Error';
 import moment from 'moment';
 
 class DateAttribute extends Attribute {
-    constructor(id, name, mask = 'date', formId, options = {}) {
+    constructor(id, name, type = 'date', formId, options = {}) {
         super(id, name, formId, options);
-        this.mask = mask;
+        this.type = type;
         this.min = options.min_value;
         this.max = options.max_value;
 
@@ -24,7 +24,7 @@ class DateAttribute extends Attribute {
      */
     getDOM(value) {
         let inputType = 'date';
-        switch (this.mask) {
+        switch (this.type) {
             case 'datetime':
                 inputType = 'datetime-local';
                 break;
@@ -38,18 +38,18 @@ class DateAttribute extends Attribute {
 
         let $input = $(`<input class="feature-attribute" id="${this.id}" type="${inputType}" data-form-ref="${this.formId}" name="${this.name}"/>`);
         
-        let mask = `mask_${this.mask}`;
-        $input.addClass(mask); // pour le style
+        let type = `mask_${this.type}`;
+        $input.addClass(type); // pour le style
 
         if (value !== null) {
-            if (this.mask == 'datetime') {
-                value = moment(value, this.formats[this.mask]).format(this.datetimeInputFormat);
+            if (this.type == 'datetime') {
+                value = moment(value, this.formats[this.type]).format(this.datetimeInputFormat);
             }
             $input.val(value);
         }
         if (this.readOnly) $input.prop('disabled', true);
         if (this.defaultValue) $input.data('defaultValue', this.defaultValue);
-        if (this.mask == 'year') {
+        if (this.type == 'year') {
             if (!this.min) this.min = 1900;
             if (!this.max) this.max = 2100;
             $input.prop('step', 1);
@@ -77,9 +77,9 @@ class DateAttribute extends Attribute {
         if ([null, ''].indexOf(value) !== -1) return null;
         
         // le format du input et celui attendu par le serveur est different pour le datetime
-        if (this.mask == 'datetime') {
+        if (this.type == 'datetime') {
             try {
-                return moment(value, this.datetimeInputFormat).format(this.formats[this.mask]);
+                return moment(value, this.datetimeInputFormat).format(this.formats[this.type]);
             } catch (e) {
                 return value;
             }
@@ -92,7 +92,8 @@ class DateAttribute extends Attribute {
         this.error = null;
         value = value ? value : this.getNormalizedValue();
         if (!value && (!this.nullable || this.required) && !this.conditionField) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
 
@@ -102,17 +103,21 @@ class DateAttribute extends Attribute {
 
         if (!value) return true;
 
-        let date = moment(value, this.formats[this.mask], true);
+        let date = moment(value, this.formats[this.type], true);
         if (!date.isValid()) {
-            this.error =  errors.invalid_date;
+            let error = new Error("invalid_date");
+            this.error = error.getMessage();
             return false;
         }
 
-        if (
-            (this.max && Number(value) > Number(this.max))
-            || (this.min && Number(value) < Number(this.min))
-        ) {
-            this.error = errors.min_max
+        if (this.max && Number(value) > Number(this.max)) {
+            let error = new Error("max", [this.max]);
+            this.error = error.getMessage();
+            return false;
+        }
+        if (this.min && Number(value) < Number(this.min)) {
+            let error = new Error("min", [this.min]);
+            this.error = error.getMessage();
             return false;
         }
 

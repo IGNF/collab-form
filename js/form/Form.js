@@ -333,7 +333,7 @@ class Form {
 }
 
 const typesIgnored = [
-    'point', 'multipoint', 'linestring', 'multilinestring', 'polygon', 'multipolygon', 'geometry', 'geometrycollection', 'document'
+    'point', 'multipoint', 'linestring', 'multilinestring', 'polygon', 'multipolygon', 'geometry', 'geometrycollection'
 ];
 
 /**
@@ -364,20 +364,21 @@ function createFormForTheme($container, id, theme, values = {}, style = 'web') {
         let type = themeAttr.type.toLowerCase();
         if (typesIgnored.includes(type)) continue;
         let $row = $('<tr></tr>');
-        $row.attr('data-type', type);
-        let $td = $('<td></td>').attr('data-title', themeAttr.title || themeAttr.name);
-
-        if (type === 'jsonvalue') {
-            $td.attr('colspan', 2);
-        }
-
         let attrId = "".concat(id, "-").concat(i);
         let attribute = form.addAttributeFromTheme(attrId, themeAttr);
         if (!attribute) continue;
+        let attrType = attribute.type;
+        $row.attr('data-type', attrType);
+        let $td = $('<td></td>').attr('data-title', themeAttr.title || themeAttr.name);
+
+        if (attrType === 'jsonvalue') {
+            $td.attr('colspan', 2);
+        }
+
         let value = values[attribute.name] ? values[attribute.name] : null;
         form.append(attribute, $td, value);
 
-        if (type !== 'jsonvalue') {
+        if (attrType !== 'jsonvalue') {
             let $label = attribute.getDOMLabel();
 
             var $tdLabel = $('<td></td>').append($label);
@@ -420,29 +421,19 @@ function createFormForTable($container, id, table, values = {}, style = 'web') {
         let type = column.type.toLowerCase();
         if (typesIgnored.includes(type) || table.id_name == column.name) continue;
         let $row = $('<tr></tr>');
-        //homogeneisation des types @TODO faire autrement
-        let corrType = type;
-        switch (type) {
-            case "boolean":
-                corrType = "checkbox";
-                break;
-            case "string":
-                corrType = "text";
-                break;
-            case "choice":
-                corrType = "list";
-                break;
-        }
-        $row.attr('data-type', corrType);
+        
+        let attrId = "".concat(id, "-").concat(i);
+        let attribute = form.addAttributeFromFeatureAttributeType(attrId, column);
+        let typeAttr = attribute.type;
+        if (!attribute) continue;
+
+        $row.attr('data-type', typeAttr);
         let $td = $('<td></td>').attr('data-title', column.title || column.name);
 
-        if (type === 'jsonvalue') {
+        if (typeAttr === 'jsonvalue') {
             $td.attr('colspan', 2);
         }
 
-        let attrId = "".concat(id, "-").concat(i);
-        let attribute = form.addAttributeFromFeatureAttributeType(attrId, column);
-        if (!attribute) continue;
         let value = values[attribute.name] ? values[attribute.name] : null;
         form.append(attribute, $td, value);
 

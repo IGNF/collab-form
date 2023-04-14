@@ -2,12 +2,13 @@ import {Attribute} from './Attribute';
 import jquery from "jquery";
 export default (window.$ = window.jQuery = jquery);
 require('combobox');
-import {errors} from '../../messages';
+import {Error} from '../Error';
 
 class ChoiceAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         
+        this.type = "list";
         let listOfValues = options.enum;
         this.multiple = ('multiple' in options) ? options.multiple : false;
 
@@ -72,7 +73,8 @@ class ChoiceAttribute extends Attribute {
         value = value ? value : this.getNormalizedValue();
 
         if (Array.isArray(value) && !this.multiple) {
-            this.error = errors.unexpected_type;
+            let error = new Error("unexpected_type");
+            this.error = error.getMessage();
             return false;
         }
 
@@ -81,7 +83,8 @@ class ChoiceAttribute extends Attribute {
         }
 
         if (!value && (!this.nullable || this.required) && !this.conditionField) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
 
@@ -94,12 +97,14 @@ class ChoiceAttribute extends Attribute {
 
     validateMultiple(value) {
         if (!Array.isArray(value)) {
-            this.error = errors.unexpected_type;
+            let error = new Error("unexpected_type");
+            this.error = error.getMessage();
             return false;
         }
         
         if (value.length < 1 && (!this.nullable || this.required)) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
 

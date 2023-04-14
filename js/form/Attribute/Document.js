@@ -1,11 +1,16 @@
 import {Attribute} from './Attribute';
-import {errors} from '../../messages';
+import {Error} from '../Error';
 const bootbox = require('bootbox');
 
+/**
+ * documents must be managed in each app separately.
+ * this class watching for changes in input class to trigger action on dependants fields
+ */
 class DocumentAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
         this.mimeTypes = options.mime_types;
+        this.type = "document";
     };
 
     getDOM(value) {
@@ -13,19 +18,24 @@ class DocumentAttribute extends Attribute {
         let $a = $(`<a id="a-${this.id}" href="#"></a>`);
         $a.attr('download', null);
         $a.attr('data-docid', value);
+        $a.attr('mime-types', this.mimeTypes);
         $dom.push($a);
         let $input = $(`<input class="feature-attribute" id="${this.id}" type="file" name="${this.name}" data-form-ref="${this.formId}"/>`);
         if (this.defaultValue) $input.data('defaultValue', this.defaultValue);
         $input.css('display', 'none');
         $dom.push($input);
 
-        if (!this.readOnly) {
-            $dom.push($(`<button id="delete-btn-${this.id}" class="btn btn-default btn-xs document delete pull-right"><i class="fas fa-trash-alt no-trailing-space"></i></button>`));
-            $dom.push($(`<button class='btn btn-primary btn-xs document pull-right' onclick="$('#${this.id}').click();"><i class='fas fa-folder-open no-trailing-space'></i></button>`));
-        }
-
         return $dom;
     };
+
+    createButtons($td) {
+        let $buttons = [];
+        if (!this.readOnly) {
+            $buttons.push($(`<button id="delete-btn-${this.id}" class="btn btn-default btn-xs document delete pull-right"><i class="fas fa-trash-alt no-trailing-space"></i></button>`));
+            $buttons.push($(`<button class='btn btn-primary btn-xs document pull-right' onclick="$('#${this.id}').click();"><i class='fas fa-folder-open no-trailing-space'></i></button>`));
+        }
+        $td.append($buttons);
+    }
 
     getNormalizedValue() {
         let $a = $("#a-"+this.id);
@@ -60,7 +70,7 @@ class DocumentAttribute extends Attribute {
     }
 
     /**
-     * 
+     * setFileDate
      * Ajout ou changement de document
      */
     onChange() {

@@ -1,10 +1,11 @@
 import {Attribute} from './Attribute';
-import {errors} from '../../messages';
+import {Error} from '../Error';
 
 class BooleanAttribute extends Attribute {    
     constructor(id, name, formId, options = {}) {
         super(id, name, formId, options);
 
+        this.type = "checkbox";
         this.list = {
             'true': 'Oui',
             'false': 'Non'
@@ -61,7 +62,8 @@ class BooleanAttribute extends Attribute {
             return false;
         }
         if (undefined === value && (!this.nullable || this.required) && !this.conditionField) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
         return true;

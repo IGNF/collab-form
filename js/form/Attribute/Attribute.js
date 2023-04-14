@@ -8,6 +8,7 @@ class Attribute {
         let readOnly = ign_collab_form.ignoreReadOnly ? false : ('readOnly' in options) ? options.readOnly : false;
 
         this.id = "attr-"+id,
+        this.type = "text";
         this.name = name;
         this.formId = formId;
         this.nullable = ('nullable' in options) ? options.nullable : (('mandatory' in options) ? !options.mandatory : true); //contrainte en bd
@@ -28,7 +29,7 @@ class Attribute {
      * 
      * @return {JQuery object}
      */
-    getDOM(value, type='text') {
+    getDOM(value, type="text") {
         let $input = $(`<input class="feature-attribute" id="${this.id}" type="${type}" data-form-ref="${this.formId}" name="${this.name}"/>`);
 
         if (value !== null) $input.val(value);

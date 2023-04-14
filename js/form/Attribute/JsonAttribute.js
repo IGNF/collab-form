@@ -2,7 +2,7 @@ import Ajv from "ajv";
 const localize = require("ajv-i18n")
 import { Attribute } from './Attribute';
 import { JsonAttributeErrorsFactory } from '../JsonAttributeErrors';
-import {errors} from '../../messages';
+import {Error} from '../Error';
 
 class JsonValueFactory {
     static getComponent(definition) {
@@ -87,6 +87,7 @@ class JsonAttribute extends Attribute {
         };
         this.required;
         this.next = 0;
+        this.type = "jsonvalue";
 
         // Le schema est obligatoire et doit etre un object
         let schema = options['json_schema'];
@@ -332,7 +333,8 @@ class JsonAttribute extends Attribute {
 
         // valeur null mais pas nullable => erreur
         if (!value && (!this.nullable || this.required) && !this.conditionField) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
         if (! value) return true;

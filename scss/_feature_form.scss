@@ -33,6 +33,9 @@
                 &.has-error {
                     color: red;
                 }
+                &.required:after {
+                    content: " *";
+                }
             }
             &.feature-attribute-name {
                 padding: 0 5px 0 5px;

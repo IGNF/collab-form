@@ -1,5 +1,5 @@
 import {Attribute} from './Attribute';
-import {errors} from '../../messages';
+import {Error} from '../Error';
 
 class StringAttribute extends Attribute {
     constructor(id, name, formId, options = {}) {
@@ -8,6 +8,7 @@ class StringAttribute extends Attribute {
         this.maxLength = options.max_length;
         this.pattern = options.pattern;
         this.custom_id = options.custom_id;
+        this.type = "text";
     }
 
     getDOM(value) {
@@ -35,7 +36,8 @@ class StringAttribute extends Attribute {
         value = value ? value : this.getNormalizedValue();
 
         if (!value && (!this.nullable || this.required) && !this.custom_id && !this.conditionField) {
-            this.error = errors.mandatory;
+            let error = new Error("mandatory");
+            this.error = error.getMessage();
             return false;
         }
         
@@ -45,11 +47,14 @@ class StringAttribute extends Attribute {
 
         if (!value) return true;
 
-        if (
-            (this.maxLength && value.length > this.maxLength)
-            || (this.minLength && value.length < this.minLength)     
-        ) {
-            this.error = errors["min_max"];
+        if (this.maxLength && value.length > this.maxLength) {
+            let error = new Error("max_length", [this.maxLength]);
+            this.error = error.getMessage();
+            return false;
+        }
+        if (this.minLength && value.length < this.minLength) {
+            let error = new Error("min_length", [this.minLength]);
+            this.error = error.getMessage();
             return false;
         }
 
@@ -57,13 +62,15 @@ class StringAttribute extends Attribute {
             try {
                 let url = new URL(value);
             } catch(e) {
-               this.error = errors["invalid_url"];
+                let error = new Error("invalid_url");
+                this.error = error.getMessage();
                 return false;
             }
         } else if (this.pattern) {
             let regex = new RegExp(this.pattern);
             if (!regex.exec(value)) {
-                this.error = errors["invalid regex"];
+                let error = new Error("invalid_regex", this.pattern);
+                this.error = error.getMessage();
                 return false;
             }
         }
