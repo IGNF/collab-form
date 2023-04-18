@@ -1,7 +1,7 @@
 import {DateAttribute} from "./Attribute/Date"; 
 import {BooleanAttribute} from "./Attribute/Boolean";
 import {ChoiceAttribute} from "./Attribute/Choice";
-import {DocumentAttribute, LinkUpdater} from "./Attribute/Document";
+import {DocumentAttribute} from "./Attribute/Document";
 import {DoubleAttribute} from "./Attribute/Double";
 import {IntegerAttribute} from "./Attribute/Integer";
 import {LikeAttribute} from "./Attribute/Like";
@@ -23,8 +23,6 @@ class AttributeFactory {
         if (canBeSelect.indexOf(typel) != -1 && hasList) {
             return new ChoiceAttribute(id, name, formId, options)
         }
-        //cas des documents geres comme des strings partout sauf dans le collaboratif
-        if (typel == 'document' && !LinkUpdater.documentUrls_) typel = 'string';
 
         switch (typel) {
             case 'date':

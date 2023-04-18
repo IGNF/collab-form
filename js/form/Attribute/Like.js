@@ -61,10 +61,10 @@ class LikeAttribute extends Attribute {
             }
         } catch (e){
             var result = {};
-            result['userid'] = null;
             result['validDate'] = value;
             result['cnt'] = 0;
         }
+        
         return result;
     }
 

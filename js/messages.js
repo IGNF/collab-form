@@ -7,7 +7,6 @@ const errors = {
     "invalid_url": "La valeur n'est pas une URL valide",
     "invalid_regex": "La valeur ne correspond pas à l'expression régulière ?",
     "unexpected_type": "La valeur est d'un type inattendu",
-    "title": "Erreur",
     "invalid_date": "Le format de la date est invalide",
     "invalid_double": "Le format du nombre est invalide",
     "unknown": "Erreur inconnue"
