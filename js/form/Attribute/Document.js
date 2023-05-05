@@ -13,7 +13,7 @@ class DocumentAttribute extends Attribute {
 
     getDOM(value) {
         let $dom = [];
-        let $a = $('<a id="a-${this.id}" href="#"></a>');
+        let $a = $(`<a id="a-${this.id}" href="#"></a>`);
         $a.attr('download', null);
         $a.attr('data-docid', value);
         $a.attr('mime-types', this.mimeTypes);
