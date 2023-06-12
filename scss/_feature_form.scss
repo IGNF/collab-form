@@ -56,21 +56,18 @@
             input.feature-attribute:not([type='checkbox']) {    
                 width:100%;
                 // Picto à droite des inputs selon le type de champ
-                &.mask_number, &.mask_int, &.mask_datetime, &.mask_date, &.mask_time, &.mask_year, &.mask_yearmonth {
+                &.mask_number, &.mask_int, &.mask_year {
                     background-image: url('../img/masks.png');
                     background-repeat: no-repeat;
                 }
-                &.mask_datetime, &.mask_date, &.mask_time, &.mask_year, &.mask_yearmonth {
+                &.mask_year {
                     min-width: 265px; // assez large pour datetimepicker
                 }
                 &.mask_number, &.mask_int {
                     padding-right: 20px;
                     background-position: right -4px;
                 }
-                &.mask_datetime {
-                    background-position: right -46px;
-                }
-                &.mask_date, &.mask_year, &.mask_yearmonth {
+                &.mask_year {
                     background-position: right -26px;
                 }
                 &.mask_time {
