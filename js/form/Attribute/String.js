@@ -26,6 +26,7 @@ class StringAttribute extends Attribute {
     }
 
     normalize(value) {
+        value = value ? value.toString() : value;
         value = value ? value.trim() : null;
         if ([null, ''].indexOf(value) !== -1) return null;
         return value;
