@@ -122,6 +122,7 @@ class Form {
                 defaultValue: $(this).data('defaultValue')   
             };
             let dependency = $(this).data('dependency');
+            let readOnly = $(this).prop('disabled');
             
             let disabled = false;
             if (dependency) {
@@ -136,6 +137,7 @@ class Form {
                     disabled = ! (new RegExp(constraint.regex).test(value));
                 }
             }
+            if (readOnly) disabled = true;
 
             if (isMobile) {
                 self.choice(sel, options, v => onselect(sel, v));
