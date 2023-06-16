@@ -111,6 +111,7 @@ class Form {
             };
             
             let dependency = $(this).data('dependency');
+            let readOnly = $(this).prop('disabled');
             
             let disabled = false;
             if (dependency) {
@@ -125,6 +126,7 @@ class Form {
                     disabled = ! (new RegExp(constraint.regex).test(value));
                 }
             }
+            if (readOnly) disabled = true;
 
             $(this).combobox(options);
             $(this).combobox("setDisabled", disabled);
