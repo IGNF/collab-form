@@ -1,11 +1,7 @@
 {
   "name": "collab-form",
-  "version": "1.0.0",
+  "version": "1.0.8",
   "description": "Création et gestion de formulaires pour les thèmes du collaboratif",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@gitlab.dockerforge.ign.fr:10022/collaboratif/collab-form.git"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,8 +13,8 @@
   "license": "Propriétaire",
   "peerDependencies": {
     "ajv-i18n": "^4.2.0",
-    "jsutils": "http://gitlab.dockerforge.ign.fr/ign/jsutils.git#master",
-    "combobox": "git+http://gitlab.dockerforge.ign.fr/ign/combobox.git",
+    "@ign-mut/jsutils": "^1.0.2",
+    "@ign-mut/combobox": "^1.0.0",
     "moment": "^2.29.1"
   },
   "devDependencies": {
