@@ -13,8 +13,8 @@
   "license": "Propriétaire",
   "peerDependencies": {
     "ajv-i18n": "^4.2.0",
-    "combobox": "git+http://gitlab.dockerforge.ign.fr/ign/combobox.git",
-    "jsutils": "git+http://gitlab.dockerforge.ign.fr/ign/jsutils.git#master",
+    "@ign-mut/combobox": "^1.0.0",
+    "@ign-mut/jsutils": "^1.0.2",
     "moment": "^2.29.1"
   },
   "devDependencies": {
