@@ -1,5 +1,5 @@
 {
-  "name": "collab-form",
+  "name": "@ign-mut/collab-form",
   "version": "1.0.8",
   "description": "Création et gestion de formulaires pour les thèmes du collaboratif",
   "scripts": {
