@@ -1,11 +1,7 @@
 {
-  "name": "collab-form",
-  "version": "1.0.0",
+  "name": "@ign-mut/collab-form",
+  "version": "1.1.0-dev",
   "description": "Création et gestion de formulaires pour les thèmes du collaboratif",
-  "repository": {
-    "type": "git",
-    "url": "ssh://git@gitlab.dockerforge.ign.fr:10022/collaboratif/collab-form.git"
-  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
