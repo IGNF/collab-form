@@ -377,7 +377,7 @@ function createFormForTheme($container, id, theme, values = {}, style = 'web') {
             $td.attr('colspan', 2);
         }
 
-        let value = values[attribute.name] ? values[attribute.name] : null;
+        let value = values[attribute.name] ? values[attribute.name] : (attribute.defaultValue ? attribute.defaultValue : null);
         if (attrType == 'checkbox') value = values[attribute.name];
         form.append(attribute, $td, value);
 
@@ -437,8 +437,7 @@ function createFormForTable($container, id, table, values = {}, style = 'web') {
             $td.attr('colspan', 2);
         }
 
-
-        let value = values[attribute.name] ? values[attribute.name] : null;
+        let value = values[attribute.name] ? values[attribute.name] : (attribute.defaultValue ? attribute.defaultValue : null);
         if (typeAttr == 'checkbox') value = values[attribute.name];
         form.append(attribute, $td, value);
 
