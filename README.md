@@ -4,7 +4,16 @@ Module javascript permettant la création et la gestion de formulaires provenant
 
 ## Installation
 
-npm install git+http://gitlab.dockerforge.ign.fr/collaboratif/collab-form.git
+Dans le .npmrc global (dans le dossier utilisateur sur windows) ou dans celui du projet ajouter les lignes suivantes, en ajoutant votre token:
+@ign-mut:registry=https://gitlab.gpf-tech.ign.fr/api/v4/packages/npm/
+//gitlab.gpf-tech.ign.fr/api/v4/packages/npm/:_authToken=MON_TOKEN
+//gitlab.gpf-tech.ign.fr/api/v4/projects/:_authToken=MON_TOKEN
+
+puis:
+
+<pre>
+npm add @ign-mut/collab-form
+</pre>
 
 ## Dépendances
 
