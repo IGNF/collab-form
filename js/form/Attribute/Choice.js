@@ -37,7 +37,8 @@ class ChoiceAttribute extends Attribute {
 		for (const [key, value] of list) {
 			let v = (null === value) ? "" : value;
 			let $option = $(`<option value="${v}">${key}</option>`);
-			if (v === val) {
+            //on ne prend pas en compte le type pour avoir le match entre int/string
+			if (v == val) {
 				$option.prop('selected', true);
 			}
 			$input.append($option);
@@ -62,6 +63,8 @@ class ChoiceAttribute extends Attribute {
 
     normalize(value) {
         if (Array.isArray(value)) return value;
+        // la liste est toujours fournie sous forme de string, on force le type.
+        value = value ? String(value) : null;
         value = value ? value.trim() : null;
         if ([null, ''].indexOf(value) !== -1) return null;
         return value;
