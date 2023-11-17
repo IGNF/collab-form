@@ -1,4 +1,4 @@
-FillConstraint = function(formId) {
+let FillConstraint = function(formId) {
 	this._dependents = {};
 	this.formId = formId;
 	
