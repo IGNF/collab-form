@@ -64,7 +64,7 @@ class LikeAttribute extends Attribute {
             result['validDate'] = value;
             result['cnt'] = 0;
         }
-        
+        if (!result || !parseInt(result['cnt'])) return null;// en cas de 0 like on laisse la valeur nulle inchangee
         return result;
     }
 
