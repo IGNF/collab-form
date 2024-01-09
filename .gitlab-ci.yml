@@ -45,9 +45,9 @@ publish:
     - |
       if [[ "$(npm view ${NPM_PACKAGE_NAME} versions)" != *"'${NPM_PACKAGE_VERSION}'"* ]]; then
         if [[ -n "${SIGSTORE_ID_TOKEN}" ]]; then
-          npm publish --provenance
+          npm publish --provenance --verbose
         else
-          npm publish
+          npm publish --verbose
         fi
         echo "Successfully published version ${NPM_PACKAGE_VERSION} of ${NPM_PACKAGE_NAME} to GitLab's NPM registry: ${CI_PROJECT_URL}/-/packages"
       else
