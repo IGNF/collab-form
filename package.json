@@ -1,5 +1,5 @@
 {
-  "name": "@ign-mut/collab-form",
+  "name": "collab-form",
   "version": "1.1.0",
   "description": "Création et gestion de formulaires pour les thèmes du collaboratif",
   "scripts": {
@@ -13,8 +13,8 @@
   "license": "Propriétaire",
   "peerDependencies": {
     "ajv-i18n": "^4.2.0",
-    "@ign-mut/combobox": "^1.0.0",
-    "@ign-mut/jsutils": "^1.0.2",
+    "combobox": "https://github.com/IGNF/combobox.git#semver:^1.0.0",
+    "jsutils": "https://github.com/IGNF/jsutils#semver:^1.0.2",
     "moment": "^2.29.1"
   },
   "devDependencies": {
