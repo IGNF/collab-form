@@ -61,6 +61,7 @@ class DocumentAttribute extends Attribute {
      * a faire apres ajout ou changement de document
      */
     onChange() {
+        var self = this;
         let $el = $("#"+this.id);
         let file = $el[0].files[0];
         $el.trigger("attribute-modified");
@@ -76,7 +77,7 @@ class DocumentAttribute extends Attribute {
             if (constraint.type === 'document' && constraint.value.match(/(File\(\))$/)) {
                 switch (constraint.value){
                     case 'dateFile()':
-                        setFileDate(file, $field);
+                        self.setFileDate(file, $field);
                         break;
                     case 'nameFile()':
                         $field.val(file.name);
