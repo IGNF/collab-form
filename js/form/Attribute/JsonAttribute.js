@@ -20,7 +20,7 @@ class JsonValueFactory {
             case 'string':
                 $elt = $('<input>', { type: "text" });
                 if ('pattern' in definition) {
-                    $elt.data('pattern', definition.pattern);   
+                    $elt.data('pattern', definition.pattern); 
                 }
                 if ('format' in definition && 'date' === definition.format) {
                     $elt.addClass("mask_date datetimepicker-input")
@@ -85,7 +85,7 @@ class JsonAttribute extends Attribute {
             },
             ignoreReadonly: true
         };
-        this.required;
+        this.requiredItems;
         this.next = 0;
         this.type = "jsonvalue";
 
@@ -99,9 +99,9 @@ class JsonAttribute extends Attribute {
         this.jsonSchema = schema;			
         try {
             if (this.jsonSchema.type === 'array') {
-                this.required = this.jsonSchema.items.required || [];
+                this.requiredItems = this.jsonSchema.items.required || [];
             } else {
-                this.required = this.jsonSchema.required || []; 
+                this.requiredItems = this.jsonSchema.required || []; 
             }
         }  catch(e) {} 
     }
@@ -148,7 +148,7 @@ class JsonAttribute extends Attribute {
 
         let result = {};
         for (const [key, definition] of Object.entries(properties)) {
-            let mandatory = this.required.includes(key);
+            let mandatory = this.requiredItems.includes(key);
 
             let value = null;
             if (key in jsonObject) {
@@ -183,7 +183,7 @@ class JsonAttribute extends Attribute {
             let $divRow = $('<div>', { class: "json-row" }).appendTo($divObject);
             
             let jskey = key;
-            if (this.required.includes(key)) jskey += '&nbsp;*';
+            if (this.requiredItems.includes(key)) jskey += '&nbsp;*';
             $divRow.append($('<div>', { class: "json-key" }).data('key', key).html(jskey));
             
             let $divJsonValue = $('<div>', { class: "json-value" });

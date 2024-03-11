@@ -12,7 +12,7 @@
   "author": "mjacopucci",
   "license": "Propriétaire",
   "peerDependencies": {
-    "ajv-i18n": "^4.2.0",
+    "ajv-i18n": "^3.6.0",
     "combobox": "https://github.com/IGNF/combobox.git#semver:^1.0.0",
     "jsutils": "https://github.com/IGNF/jsutils#semver:^1.0.2",
     "moment": "^2.29.1"
