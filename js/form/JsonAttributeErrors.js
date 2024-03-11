@@ -82,10 +82,16 @@ class JsonAttributeArrayErrors extends JsonAttributeErrors {
         if (! errors.length) return null;
 
         let regex = /\[(\d+)\]\.(.*)/;
-
+        let regexWithoutKey = /\[(\d+)\]/;
+        
         this._errors = {};
         errors.forEach(error => {
+            
             let res = regex.exec(error.dataPath);
+            if (!res) {
+                res = regexWithoutKey.exec(error.dataPath);
+                res[2] = 'global';
+            }
             
             let num = res[1]; let key = res[2];
             if (! (num in this._errors)) {

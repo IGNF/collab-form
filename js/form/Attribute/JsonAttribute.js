@@ -293,10 +293,11 @@ class JsonAttribute extends Attribute {
                 
                 let key = $jsRow.find('.json-key').data('key');
                 let value = $jsRow.find('.json-value :input').val();
-                
-                if ("" === value) {
-                    jsObject[key] = null;  
-                    return;     
+
+                if (null === value) return;
+                if ("" === value && properties[key].type != "enum") {
+                    value = null;
+                    return;
                 }
 
                 switch(properties[key].type) {
@@ -310,7 +311,7 @@ class JsonAttribute extends Attribute {
                         value = parseFloat(value);
                         break;
                 }
-
+                
                 jsObject[key] = value;   
             });
             if (Object.keys(jsObject).length) {
