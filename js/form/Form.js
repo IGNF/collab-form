@@ -457,4 +457,36 @@ function createFormForTable($container, id, table, values = {}, style = 'web') {
     return form;
 }
 
-export { Form, createFormForTable, createFormForTheme };
+/**
+ * Affichage des champs pour lecture seule
+ * @param {Jquery element} $container la div dans laquelle on veut construire le formulaire 
+ * @param {string} id 
+ * @param {Object} properties 
+ */
+function createSimpleForm($container, id, properties) {
+    let $div = $('<div>', {class: 'feature-form'});
+    
+    let selector = `properties-${id}`;
+    let $table = $('<table>', {class: 'table', id: selector});
+
+    let form = new Form($table, id);
+    $div.append($table);
+    $container.append($div);
+
+    if (properties !== Object(properties)) {
+        return form;
+    }
+
+    for (const [name, value] of Object.entries(properties)) {
+        if (value === Object(value)) continue;  // geometrie par exemple
+
+        let $row = $('<tr>');
+        $('<td>').append($('<label>', { class: 'control-label', html: name })).appendTo($row);
+        $('<td>', { html: value }).appendTo($row);
+        $table.append($row);
+    }
+
+    return form;
+};
+
+export { Form, createSimpleForm, createFormForTable, createFormForTheme };

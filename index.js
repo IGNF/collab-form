@@ -1,3 +1,3 @@
-import {Form, createFormForTheme, createFormForTable} from './js/form/Form';
+import {Form, createSimpleForm, createFormForTheme, createFormForTable} from './js/form/Form';
 
-export {createFormForTheme, createFormForTable, Form};
+export {createSimpleForm, createFormForTheme, createFormForTable, Form};
