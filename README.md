@@ -48,6 +48,11 @@ script:
 
 </pre>
 
+## Evenements
+
+Lors de l' ajout d un nouvel objet Json dans le champs JsonAttribute, un evenement new_json_object_event est déclenché sur l element dom du formulaire, avec en paramètre l identifiant de la nouvelle div cree contentant le formulaire de l'objet json.
+Cet évènement est utilisé afin de pouvoir gérer plus facilement l initialisation différente des champs selon le cas où l'on utilise le module sur le web ou le mobile.
+
 ## Attention
 
 Les traductions restent à faire.

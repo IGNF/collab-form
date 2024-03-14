@@ -1,6 +1,7 @@
 import { FillConstraint } from "./fill-constraint";
 import { Attribute, ign_collab_form } from './Attribute/Attribute';
 import { AttributeFactory } from './AttributeFactory';
+import { NEW_JSON_OBJ } from './Attribute/JsonAttribute';
 require('../jeux-attributs.js');
 
 class Form {
@@ -191,6 +192,10 @@ class Form {
     }
 
     init() {
+        $(window).on(NEW_JSON_OBJ, (event, jsonFormId) => {
+            this.initJsonAttributes(jsonFormId);
+        });
+
         for (const name in this.attributes) {
             this.attributes[name].init();
         }
@@ -199,6 +204,37 @@ class Form {
         this.initCombobox();
         this.initRegexDependants();
         this.initJeuxAttributs();
+    }
+
+    initJsonAttributes(jsonFormId) {
+        if (ign_collab_form.style == 'mobile') {
+            $(`#${jsonFormId} .mask_int`).each((i, e) => {
+                e.type = "number";
+            });
+            $(`#${jsonFormId} .mask_number`).each((i, e) => {
+                e.type = "number";
+            });
+            $(`#${jsonFormId} .mask_date`).each((i, e) => {
+                e.type = "date";
+            });
+        } else {
+            // Ajout des plugins (masques)
+            $(`#${jsonFormId} .mask_int`).numericMask();
+            $(`#${jsonFormId} .mask_number`).numericMask(true);
+
+            let $dateElts = $(`#${jsonFormId} .mask_date`);
+            $dateElts.each((i, e) => {
+                e.addClass("datetimepicker-input")
+                .attr('data-toggle', 'datetimepicker')
+                .prop('readonly', true);
+            });
+            $dateElts.datetimepicker(this.datepickerOptions);
+            $dateElts.on('show.datetimepicker', (e) => {
+                // Pas tres beau, on decale a gauche de 15px
+                $(e.currentTarget).next().css('left', '-15px');
+            });
+            $dateElts.parent().css('position', 'relative');
+        }
     }
 
     addAttributeFromFeatureAttributeType(id, attributeType) {

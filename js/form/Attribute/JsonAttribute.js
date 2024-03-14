@@ -4,6 +4,8 @@ import { Attribute } from './Attribute';
 import { JsonAttributeErrorsFactory } from '../JsonAttributeErrors';
 import {Error} from '../Error';
 
+const NEW_JSON_OBJ = 'new_json_object_event';
+
 class JsonValueFactory {
     static getComponent(definition) {
         let type;
@@ -23,9 +25,7 @@ class JsonValueFactory {
                     $elt.data('pattern', definition.pattern); 
                 }
                 if ('format' in definition && 'date' === definition.format) {
-                    $elt.addClass("mask_date datetimepicker-input")
-                        .attr('data-toggle', 'datetimepicker')
-                        .prop('readonly', true);
+                    $elt.addClass("mask_date");
                 }
                 break;
             case 'integer':
@@ -211,24 +211,13 @@ class JsonAttribute extends Attribute {
         // Ajout dans la div
         $(`#${this.id}`).append(jsform);
         let jsformId = jsform.attr('id');
+        $(window).trigger(NEW_JSON_OBJ, jsformId);
 
         /* Ajout du callback click sur le bouton remove */
         $(`#${this.id} #${jsformId} .btn-remove`).on('click', (e) => {
             e.preventDefault();
             this.handleRemove(e);
         });
-
-        // Ajout des plugins (masques)
-        $(`#${this.id} #${jsformId} .mask_int`).numericMask();
-        $(`#${this.id} #${jsformId} .mask_number`).numericMask(true);
-
-        let $dateElts = $(`#${this.id} #${jsformId} .mask_date`);
-        $dateElts.datetimepicker(this.datepickerOptions);
-        $dateElts.on('show.datetimepicker', (e) => {
-            // Pas tres beau, on decale a gauche de 15px
-            $(e.currentTarget).next().css('left', '-15px');
-        });
-        $dateElts.parent().css('position', 'relative');
     
         /* On ne peut ajouter qu'un seul objet pour un schema de type 'object' */
         if ('object' === this.jsonSchema.type) {
@@ -331,6 +320,7 @@ class JsonAttribute extends Attribute {
 
     validate(value) {
         this.error = null;
+        value = value ? value : this.getNormalizedValue();
 
         // valeur null mais pas nullable => erreur
         if (!value && (!this.nullable || this.required) && !this.conditionField) {
@@ -357,4 +347,4 @@ class JsonAttribute extends Attribute {
     }
 }
 
-export {JsonAttribute};
+export {JsonAttribute, NEW_JSON_OBJ};
