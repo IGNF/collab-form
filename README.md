@@ -57,3 +57,5 @@ Cet évènement est utilisé afin de pouvoir gérer plus facilement l initialisa
 
 Les traductions restent à faire.
 
+Intégrer proprement les icônes du json attribute
+
