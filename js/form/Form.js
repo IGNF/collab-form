@@ -1,7 +1,7 @@
 import { FillConstraint } from "./fill-constraint";
 import { Attribute, ign_collab_form } from './Attribute/Attribute';
 import { AttributeFactory } from './AttributeFactory';
-import { NEW_JSON_OBJ } from './Attribute/JsonAttribute';
+import { NEW_JSON_OBJ, datepickerOptions } from './Attribute/JsonAttribute';
 require('../jeux-attributs.js');
 
 class Form {
@@ -228,7 +228,7 @@ class Form {
                 .attr('data-toggle', 'datetimepicker')
                 .prop('readonly', true);
             });
-            $dateElts.datetimepicker(this.datepickerOptions);
+            $dateElts.datetimepicker(datepickerOptions);
             $dateElts.on('show.datetimepicker', (e) => {
                 // Pas tres beau, on decale a gauche de 15px
                 $(e.currentTarget).next().css('left', '-15px');

@@ -5,6 +5,18 @@ import { JsonAttributeErrorsFactory } from '../JsonAttributeErrors';
 import {Error} from '../Error';
 
 const NEW_JSON_OBJ = 'new_json_object_event';
+const datepickerOptions = {
+    locale: 'fr',
+    format: 'YYYY-MM-DD',
+    debug: true,
+    useCurrent: false,
+    buttons: {
+        showToday: true,
+        showClear: true,
+        showClose: true
+    },
+    ignoreReadonly: true
+};
 
 class JsonValueFactory {
     static getComponent(definition) {
@@ -73,18 +85,6 @@ class JsonAttribute extends Attribute {
         
         this.jsonSchema = null;			
         this.JsonValue  = {};
-        this.datepickerOptions = {
-            locale: 'fr',
-            format: 'YYYY-MM-DD',
-            debug: true,
-            useCurrent: false,
-            buttons: {
-                showToday: true,
-                showClear: true,
-                showClose: true
-            },
-            ignoreReadonly: true
-        };
         this.requiredItems;
         this.next = 0;
         this.type = "jsonvalue";
@@ -347,4 +347,4 @@ class JsonAttribute extends Attribute {
     }
 }
 
-export {JsonAttribute, NEW_JSON_OBJ};
+export {JsonAttribute, NEW_JSON_OBJ, datepickerOptions};
