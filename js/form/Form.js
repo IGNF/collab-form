@@ -224,7 +224,7 @@ class Form {
 
             let $dateElts = $(`#${jsonFormId} .mask_date`);
             $dateElts.each((i, e) => {
-                e.addClass("datetimepicker-input")
+                $(e).addClass("datetimepicker-input")
                 .attr('data-toggle', 'datetimepicker')
                 .prop('readonly', true);
             });
