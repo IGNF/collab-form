@@ -388,7 +388,7 @@ const typesIgnored = [
 function createFormForTheme($container, id, theme, values = {}, style = 'web') {
     if (!('attributes' in theme && theme.attributes.length)) return null;
     if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
-    if (values === null) values = {};
+    if (!values) values = {};
 
     let $div = $('<div class="feature-form"></div>');
     let selector = `theme-${id}`;
@@ -448,7 +448,7 @@ function createFormForTheme($container, id, theme, values = {}, style = 'web') {
 function createFormForTable($container, id, table, values = {}, style = 'web') {
     if (!('columns' in table && Object.keys(table.columns).length)) return null;
     if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
-    if (values === null) values = {};
+    if (!values) values = {};
 
     let $div = $('<div class="feature-form"></div>');
     let selector = `table-${id}`;
