@@ -15,7 +15,8 @@ class BooleanAttribute extends Attribute {
         this.falseValues = ["0", "false", "f", "faux", "non"];
     }
 
-    getDOM(value = null) {
+    getDOM(value) {
+        if (value === undefined) value = this.normalize(this.defaultValue);
         let val = (null === value) ? '' : value.toString();
     
         let self = this;
@@ -51,6 +52,7 @@ class BooleanAttribute extends Attribute {
             if (this.trueValues.indexOf(value) !== -1) result = true;
             else if (this.falseValues.indexOf(value) !== -1) result = false;
         }
+        if (result === undefined) result = null;
 
         return result;
     }

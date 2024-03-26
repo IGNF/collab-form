@@ -356,7 +356,7 @@ class Form {
      * @param {JQuery object} $parent
      * cree l element dom et l ajoute a son parent
      */
-    append(attribute, $parent, value = null) {
+    append(attribute, $parent, value) {
         let $el = attribute.getDOM(value);
         if (!$el) return;
         if (attribute.automatic) {
@@ -388,6 +388,7 @@ const typesIgnored = [
 function createFormForTheme($container, id, theme, values = {}, style = 'web') {
     if (!('attributes' in theme && theme.attributes.length)) return null;
     if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
+    if (values === null) values = {};
 
     let $div = $('<div class="feature-form"></div>');
     let selector = `theme-${id}`;
@@ -413,7 +414,8 @@ function createFormForTheme($container, id, theme, values = {}, style = 'web') {
             $td.attr('colspan', 2);
         }
 
-        let value = values[attribute.name] ? values[attribute.name] : (attribute.defaultValue ? attribute.defaultValue : null);
+        // @TODO a reprendre hors recette ca n'a rien a faire là
+        let value = (attribute.name in values) ? values[attribute.name] : (attribute.defaultValue ? attribute.defaultValue : null);
         if (attrType == 'checkbox') value = values[attribute.name];
         form.append(attribute, $td, value);
 
@@ -446,6 +448,7 @@ function createFormForTheme($container, id, theme, values = {}, style = 'web') {
 function createFormForTable($container, id, table, values = {}, style = 'web') {
     if (!('columns' in table && Object.keys(table.columns).length)) return null;
     if (['web', 'mobile'].indexOf(style) == -1) throw new Error('style parameter must be web or mobile');
+    if (values === null) values = {};
 
     let $div = $('<div class="feature-form"></div>');
     let selector = `table-${id}`;
@@ -473,7 +476,8 @@ function createFormForTable($container, id, table, values = {}, style = 'web') {
             $td.attr('colspan', 2);
         }
 
-        let value = values[attribute.name] ? values[attribute.name] : (attribute.defaultValue ? attribute.defaultValue : null);
+        // @TODO a reprendre hors recette ca n'a rien a faire là
+        let value = (attribute.name in values) ? values[attribute.name] : (attribute.defaultValue ? attribute.defaultValue : null);
         if (typeAttr == 'checkbox') value = values[attribute.name];
         form.append(attribute, $td, value);
 
